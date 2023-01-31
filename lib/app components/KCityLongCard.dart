@@ -5,13 +5,9 @@ import '../utils/KColors.dart';
 
 class KCityLongCard extends StatelessWidget {
   String cityName;
-  String cityDescription;
+
   int activeUsers;
-  KCityLongCard(
-      {super.key,
-      required this.activeUsers,
-      required this.cityDescription,
-      required this.cityName});
+  KCityLongCard({super.key, required this.activeUsers, required this.cityName});
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +44,13 @@ class KCityLongCard extends StatelessWidget {
                           color: kColors.darkGrey,
                           fontWeight: FontWeight.w600),
                     ),
-                    Text(
-                      cityDescription,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: kColors.statsUnderText,
-                          fontWeight: FontWeight.w500),
-                    ),
                   ],
                 ),
               ),
               Expanded(
                 flex: 1,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/app%20components/KLogo.dart';
-import 'package:b_networks/views/home/view/home_page.dart';
+import 'package:b_networks/views/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {

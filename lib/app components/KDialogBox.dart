@@ -23,22 +23,18 @@ class KDialogBox {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            content: Builder(
-              builder: (context) {
-                var width = MediaQuery.of(context).size.width;
-                return SizedBox(
-                  height: dialogBoxHeight,
-                  width: width - 60,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widgets,
-                    ),
-                  ),
-                );
-              },
+            content: SizedBox(
+              //height: dialogBoxHeight,
+              // width: MediaQuery.of(context).size.width - 60,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widgets,
+                ),
+              ),
             ),
             actions: moreButtons == false
                 ? <Widget>[

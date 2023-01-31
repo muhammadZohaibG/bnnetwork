@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../utils/KColors.dart';
@@ -12,7 +14,7 @@ class KCalendarButton extends StatelessWidget {
     KColors kColors = KColors();
     return InkWell(
       onTap: () {
-        print("Tap");
+        log("Tap");
       },
       child: Container(
         height: 40,
