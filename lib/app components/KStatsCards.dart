@@ -1,4 +1,4 @@
-import 'package:b_networks/views/ExpensesPage/view/expenses_page.dart';
+import 'package:b_networks/views/ExpensesPage/view/expenses_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/KColors.dart';
@@ -8,10 +8,12 @@ class KStatsCards extends StatelessWidget {
   int totalEarning;
   bool showTotalExpense;
   bool showTotalEarning;
+  Function()? earningOnTap;
   KStatsCards(
       {super.key,
       this.totalEarning = 0,
       this.totalExpense = 0,
+      required this.earningOnTap,
       this.showTotalExpense = true,
       this.showTotalEarning = true});
 
@@ -52,18 +54,11 @@ class KStatsCards extends StatelessWidget {
                 )
               : Container(),
           if (showTotalExpense == true && showTotalEarning == true)
-            const SizedBox(
-              width: 24,
-            ),
+            const SizedBox(width: 24),
           showTotalExpense == true
               ? Expanded(
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ExpensesPage()));
-                    },
+                    onTap: earningOnTap,
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,

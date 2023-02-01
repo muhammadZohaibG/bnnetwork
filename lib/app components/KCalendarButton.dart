@@ -12,25 +12,21 @@ class KCalendarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     KColors kColors = KColors();
-    return InkWell(
-      onTap: () {
-        log("Tap");
-      },
-      child: Container(
-        height: 40,
-        width: 125,
-        decoration: BoxDecoration(
-          color: kColors.primary,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Center(
-          child: Text(
-            "January 2023",
-            style: TextStyle(
-                fontSize: 18,
-                color: kColors.buttonTextWhite,
-                fontWeight: FontWeight.w700),
-          ),
+    return Container(
+      height: 40,
+      width: 125,
+      decoration: BoxDecoration(
+        color: kColors.primary,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Center(
+        child: Text(
+          "Feb 2023",
+          maxLines: 1,
+          style: TextStyle(
+              fontSize: 18,
+              color: kColors.buttonTextWhite,
+              fontWeight: FontWeight.w700),
         ),
       ),
     );

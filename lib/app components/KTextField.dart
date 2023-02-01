@@ -7,7 +7,9 @@ class KTextField extends StatelessWidget {
   KColors kColors = KColors();
   Color? color;
   String? hintText;
+  TextInputType? keyboardType;
   void Function(String)? onChanged;
+  String? Function(String?)? validator;
   TextEditingController? controller;
   KTextField(
       {super.key,
@@ -15,13 +17,17 @@ class KTextField extends StatelessWidget {
       required this.onChanged,
       this.controller,
       this.hintText,
+      this.validator,
+      this.keyboardType = TextInputType.text,
       this.color});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       onChanged: onChanged,
+      validator: validator,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         suffixIcon: suffix,
         hintText: hintText,

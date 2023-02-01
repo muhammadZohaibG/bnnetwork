@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:b_networks/models/expense_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'b_network_db.dart';
@@ -25,24 +26,38 @@ class Expenses {
       columns: [ID, TITLE, AMOUNT, MONTH, YEAR, CREATEDAT, UPDATEDAT],
       //where: "$CREATEDAT< '2023-01-30'"
     );
+
     if (table.isEmpty) {
       log('Expense Not Found');
+      return [];
     } else {
-      List<Map<String, dynamic>> maps = table;
-      log(maps.toString());
+      return table;
     }
   }
 
-  Future addExpense() async {
+  Future addExpense(ExpenseModel expense) async {
     var dbClient = await DBHelper().db;
     int? id = await dbClient!.transaction((txn) async {
       log('inserting');
-
       return await txn.rawInsert(
           '''INSERT INTO $TABLE ($TITLE, $AMOUNT, $MONTH, $YEAR, $CREATEDAT, $UPDATEDAT) 
-          VALUES("Shopping", 3000, "January", "2023", "2023-01-31 11:30:13.426658", "2023-01-31 11:30:13.426658")''');
+          VALUES("${expense.title}", ${expense.amount}, 
+          "${expense.month}", "${expense.year}", 
+          "${expense.createdAt}", "${expense.updatedAt}")''');
     });
-    log('Expense saved');
-    log('id is $id');
+    if (id != 0) {
+      log('Expense saved');
+      log('id is $id');
+    }
+    return id;
+  }
+
+  Future totalExpenses() async {
+    var dbClient = await DBHelper().db;
+    var amount =
+        await dbClient!.rawQuery('Select SUM($AMOUNT) as Total FROM $TABLE');
+    log(amount[0]['Total'].toString());
+
+    return amount[0]['Total'] ?? 0;
   }
 }

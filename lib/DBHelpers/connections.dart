@@ -20,23 +20,27 @@ class Connections {
 
   Future getConnections() async {
     var dbClient = await DBHelper().db;
-    var table = await dbClient!.query(TABLE,
-        columns: [
-          ID,
-          LOCATIONID,
-          FULLNAME,
-          ADDRESS,
-          ISACTIVE,
-          MOBILE,
-          CREATEDAT,
-          UPDATEDAT
-        ],
-        where: "$ISACTIVE == 1");
+    var table = await dbClient!.query(
+      TABLE,
+      columns: [
+        ID,
+        LOCATIONID,
+        FULLNAME,
+        ADDRESS,
+        ISACTIVE,
+        MOBILE,
+        CREATEDAT,
+        UPDATEDAT
+      ],
+      // where: "$ISACTIVE == 1"
+    );
     if (table.isEmpty) {
       log('Connection Not Found');
+      return [];
     } else {
       List<Map<String, dynamic>> maps = table;
       log(maps.toString());
+      return maps;
     }
   }
 

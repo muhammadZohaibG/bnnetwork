@@ -30,6 +30,7 @@ class KExpenseLongCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 30, top: 10),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 4,
@@ -61,14 +62,12 @@ class KExpenseLongCard extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          date,
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff828282),
-                              fontWeight: FontWeight.w600),
-                        ),
+                      Text(
+                        date,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff828282),
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),

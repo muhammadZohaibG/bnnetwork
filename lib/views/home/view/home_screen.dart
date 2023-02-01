@@ -5,6 +5,7 @@ import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
 import 'package:b_networks/DBHelpers/locations.dart';
+import 'package:b_networks/views/home/components/components.dart';
 import 'package:b_networks/views/home/components/home_page_topbar.dart';
 import 'package:b_networks/app%20components/KCalendarButton.dart';
 import 'package:b_networks/app%20components/KDialogBox.dart';
@@ -15,9 +16,11 @@ import 'package:b_networks/app%20components/KUnderTopBar.dart';
 import 'package:b_networks/views/home/provider/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../utils/KColors.dart';
-import '../../../app components/KCityLongCard.dart';
+import '../../../app components/kCityLongCard.dart';
+import '../../ExpensesPage/view/expenses_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,15 +61,24 @@ class _HomePageState extends State<HomePage> {
   ];
 
   String? newCity;
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+    function();
   }
 
   function() async {
-    //final homeProvider = Provider.of<HomeProvider>(context);
-    await context.read<HomeProvider>().getLocations();
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+    await Future.delayed(const Duration(seconds: 2));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
+      await homeProvider.calculateExpenses();
+      await homeProvider.getLocations();
+    });
+
     //await locations.getLocations();
   }
 
@@ -74,8 +86,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: KColors().screenBG,
-        body: Consumer<HomeProvider>(
-          builder: (context, value, child) => Column(
+        body: Consumer<HomeProvider>(builder: (context, homeProvider, child) {
+          //  homeProvider.getLocations();
+          return Column(
             children: [
               const Padding(
                 padding: EdgeInsets.only(bottom: 10),
@@ -93,12 +106,39 @@ class _HomePageState extends State<HomePage> {
                                   rightWidget: const KCalendarButton(),
                                 ),
                                 const SizedBox(height: 20),
+                                // StreamBuilder(
+                                //   stream: homeProvider.totalExpenseStream,
+                                //   builder: (context, snapshot) {
+                                //     if (snapshot.connectionState ==
+                                //         ConnectionState.waiting) {
+                                //       return KStatsCards(
+                                //           totalEarning: 0, totalExpense: 0);
+                                //     }
+                                //     if (!snapshot.hasData ||
+                                //         (snapshot.data == null)) {
+                                //       return KStatsCards(
+                                //           totalEarning: 0, totalExpense: 0);
+                                //     }
+                                //     return KStatsCards(
+                                //         totalEarning: 0, totalExpense: 0);
+                                //   },
+                                // ),
                                 KStatsCards(
-                                    totalEarning: 75000, totalExpense: 23500),
+                                    totalEarning: 75000,
+                                    totalExpense: homeProvider.totalExpenses!,
+                                    earningOnTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ExpensesPage())).then(
+                                          (value) =>
+                                              homeProvider.calculateExpenses());
+                                    }),
                                 const SizedBox(height: 30),
                                 InkWell(
                                   onTap: () {
-                                    log(DateTime.now().toString());
+                                    homeProvider.calculateExpenses();
                                   },
                                   child: Text(
                                     "Service Locations",
@@ -108,64 +148,85 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                 ),
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: cityNames.length,
-                                    itemBuilder: (context, i) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        child: KCityLongCard(
-                                            activeUsers: cityActiveUsers[i],
-                                            cityName: cityNames[i]),
-                                      );
-                                    })
+                                homeProvider.isLoading!
+                                    ? HomeScreenComponents()
+                                        .shimmerList(context)
+                                    : homeProvider.locations!.isEmpty
+                                        ? Text(
+                                            'No Locations To Show',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: KColors().darkGrey,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        : ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemCount:
+                                                homeProvider.locations!.length,
+                                            itemBuilder: (context, index) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10),
+                                                child: KCityLongCard(
+                                                    activeUsers:
+                                                        34, //cityActiveUsers[i],
+                                                    cityName: homeProvider
+                                                        .locations![index].name!
+                                                        .toString()),
+                                              );
+                                            })
                               ])))),
               KMainButton(
                   text: "Add Service Location",
                   onPressed: () async {
-                    //await locations.addLocation();
-                    //await locations.getLocations();
-                    //await expenses.addExpense();
-                    // await expenses.getExpenses();
-                    //await connections.addConnection();
-                    //await connections.getConnections();
-                    //await bill.addBill();
-                    //await bill.getBills();
-
                     KDialogBox().showDialogBox(
                         dialogBoxHeight: 154,
                         buttonText: "Add new",
-                        onButtonPress: () {
-                          if (newCity != null && !cityNames.contains(newCity)) {
-                            cityNames.add(newCity!);
-                            cityDescription.add("$newCity description");
-                            cityActiveUsers.add(76);
-                            Navigator.pop(context);
-                            setState(() {});
+                        onButtonPress: () async {
+                          if (formKey.currentState!.validate()) {
+                            bool res = await homeProvider.addLocationInDB();
+                            if (res) {
+                              if (!mounted) return;
+                              Navigator.of(context).pop();
+                            }
                           }
                         },
                         context: context,
                         widgets: <Widget>[
-                          Text("Enter location name to add",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: KColors().statsUnderText,
-                                  fontWeight: FontWeight.w500)),
-                          const SizedBox(
-                            height: 20,
+                          Form(
+                            key: formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("Enter location name to add",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: KColors().statsUnderText,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 20),
+                                KTextField(
+                                    controller:
+                                        homeProvider.locationNameController,
+                                    onChanged: (value) {
+                                      newCity = value;
+                                    },
+                                    validator: (v) {
+                                      if (v!.isEmpty) {
+                                        return 'The field is required';
+                                      }
+                                      return null;
+                                    },
+                                    hintText: "Location Name")
+                              ],
+                            ),
                           ),
-                          KTextField(
-                              onChanged: (value) {
-                                newCity = value;
-                              },
-                              hintText: "17 Chak North")
                         ]);
                   }),
             ],
-          ),
-        ));
+          );
+        }));
   }
 }

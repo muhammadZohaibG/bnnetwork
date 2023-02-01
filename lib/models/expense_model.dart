@@ -11,13 +11,13 @@ String expenseModelToJson(ExpenseModel data) => json.encode(data.toJson());
 
 class ExpenseModel {
   ExpenseModel({
-    required this.id,
-    required this.title,
-    required this.amount,
-    required this.month,
-    required this.year,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.title,
+    this.amount,
+    this.month,
+    this.year,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int? id;
@@ -44,7 +44,7 @@ class ExpenseModel {
         "amount": amount,
         "month": month,
         "year": year,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
+        "created_at": createdAt!, //.toIso8601String(),
+        "updated_at": updatedAt! //.toIso8601String(),
       };
 }

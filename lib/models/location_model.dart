@@ -11,10 +11,10 @@ String locationModelToJson(LocationModel data) => json.encode(data.toJson());
 
 class LocationModel {
   LocationModel({
-    required this.id,
-    required this.name,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int? id;
@@ -32,7 +32,7 @@ class LocationModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
+        "created_at": createdAt!, //.toIso8601String(),
+        "updated_at": updatedAt!, //.toIso8601String(),
       };
 }

@@ -29,16 +29,25 @@ class Locations {
     }
   }
 
-  Future addLocation() async {
+  Future addLocation(LocationModel location) async {
     var dbClient = await DBHelper().db;
     int? id = await dbClient!.transaction((txn) async {
       log('inserting');
 
       return await txn
           .rawInsert('''INSERT INTO $TABLE ($NAME, $CREATEDAT, $UPDATEDAT) 
-          VALUES("Islamabad", "2023-01-31 11:30:13.426658","2023-01-31 11:30:13.426658")''');
+          VALUES("${location.name}", "${location.createdAt}","${location.updatedAt}")''');
     });
-    log('Location saved');
-    log('id is $id');
+    if (id != 0) {
+      log('Location saved');
+      log('id is $id');
+      return id;
+    }
+    return id;
+  }
+
+  Future<int> delete(int? id) async {
+    var dbClient = await DBHelper().db;
+    return await dbClient!.delete(TABLE, where: '$ID = ?', whereArgs: [id]);
   }
 }
