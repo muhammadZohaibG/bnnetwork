@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
 import 'package:b_networks/models/location_model.dart';
+import 'package:b_networks/models/location_with_active_connections_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/utils/const.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,10 +17,12 @@ class HomeProvider extends ChangeNotifier {
   TextEditingController locationNameController = TextEditingController();
   var locationDb = Locations();
   var expenseDb = Expenses();
+  var billsDb = Bills();
   bool? isLoading = true;
-  List<LocationModel>? locations = [];
+  List<LocationWithActiveConnectionsModel>? locations = [];
   int? selectedIndex;
   int? totalExpenses = 0;
+  int? totalEarnings = 0;
 
   late Stream<int?> totalExpenseStream;
   StreamController<int?> totalExpenseStreamController =
@@ -29,7 +33,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addLocationInList(LocationModel? location) {
+  addLocationInList(LocationWithActiveConnectionsModel? location) {
     locations!.add(location!);
     notifyListeners();
   }
@@ -39,7 +43,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addNewLocationAtStart(LocationModel? location) {
+  addNewLocationAtStart(LocationWithActiveConnectionsModel? location) {
     locations!.insert(0, location!);
     notifyListeners();
   }
@@ -59,6 +63,11 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  updateTotalEarnings(int? amount) {
+    totalEarnings = amount;
+    notifyListeners();
+  }
+
   addValueInTotalExpenseController(int? v) {
     totalExpenseStreamController.sink.add(v);
     notifyListeners();
@@ -69,11 +78,13 @@ class HomeProvider extends ChangeNotifier {
     try {
       emptyLocations();
       updateLoader(true);
-      List<Map<String, dynamic>> maps = await locationDb.getLocations();
+      List<Map<String, dynamic>> maps = await locationDb.getLocations() ?? [];
 
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
-          addLocationInList(LocationModel.fromJson(maps[i]));
+          log(maps[i]['active_connections'].toString());
+          addLocationInList(
+              LocationWithActiveConnectionsModel.fromJson(maps[i]));
         }
       }
 
@@ -87,22 +98,28 @@ class HomeProvider extends ChangeNotifier {
   Future calculateExpenses() async {
     try {
       var result = await expenseDb.totalExpenses();
-      // addValueInTotalExpenseController(result);
-      // yield* totalExpenseStreamController.stream;
-      updateTotalExpenses(result);
-      //totalExpenseStream = await expenseDb.totalExpenses();
 
+      updateTotalExpenses(result);
     } catch (e) {
       log(e.toString());
     }
   }
-// subha
+
+  Future calculateTotalEarnings() async {
+    try {
+      var result = await billsDb.totalBillAmountPaid();
+
+      updateTotalEarnings(result);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   Future<bool> addLocationInDB() async {
     try {
       LocationModel newLocation = LocationModel();
       bool? alreadyAdded = false;
-      log(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
+      //  log(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
 
       for (var e in locations!) {
         if (e.name!.toLowerCase() ==

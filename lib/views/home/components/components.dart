@@ -17,7 +17,8 @@ class HomeScreenComponents {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: KCityLongCard(activeUsers: 0, cityName: ''),
+            child:
+                KCityLongCard(activeUsers: 0, cityName: '', locationId: null),
           ),
         ));
   }

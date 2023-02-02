@@ -18,14 +18,14 @@ class Expenses {
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 
-  Future getExpenses() async {
+  Future getExpenses({required String? month}) async {
     var dbClient = await DBHelper().db;
     //dbClient!.rawQuery(sql);
-    var table = await dbClient!.query(
-      TABLE,
-      columns: [ID, TITLE, AMOUNT, MONTH, YEAR, CREATEDAT, UPDATEDAT],
-      //where: "$CREATEDAT< '2023-01-30'"
-    );
+    var table = await dbClient!.query(TABLE,
+        columns: [ID, TITLE, AMOUNT, MONTH, YEAR, CREATEDAT, UPDATEDAT],
+        where: "$MONTH == '$month'"
+        //where: "$CREATEDAT< '2023-01-30'"
+        );
 
     if (table.isEmpty) {
       log('Expense Not Found');

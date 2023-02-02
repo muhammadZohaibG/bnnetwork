@@ -3,6 +3,8 @@
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/b_network_db.dart';
+import 'package:b_networks/models/bill_model.dart';
+import 'package:b_networks/utils/const.dart';
 
 class Bills {
   static const String TABLE = 'Bills';
@@ -16,7 +18,7 @@ class Bills {
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 
-  Future getBills() async {
+  Future getBills({required int? connectionId}) async {
     var dbClient = await DBHelper().db;
     var table = await dbClient!.query(TABLE,
         columns: [
@@ -30,16 +32,14 @@ class Bills {
           CREATEDAT,
           UPDATEDAT
         ],
-        where: "$LOCATIONID == 1");
+        where: "$CONNECTIONID == $connectionId  ");
     if (table.isEmpty) {
       log('Bill Not Found');
-    } else {
-      List<Map<String, dynamic>> maps = table;
-      log(maps.toString());
     }
+    return table;
   }
 
-  Future addBill() async {
+  Future addBill({required BillModel bill}) async {
     var dbClient = await DBHelper().db;
     int? id = await dbClient!.transaction((txn) async {
       log('inserting');
@@ -53,9 +53,60 @@ class Bills {
         $YEAR,
         $CREATEDAT,
         $UPDATEDAT) 
-          VALUES(1,1 , 400, "January","2023","2023-01-31 11:30:13.426658","2023-01-31 11:30:13.426658")''');
+          VALUES(${bill.connectionId},${bill.locationId}, 
+          ${bill.amount}, "${bill.month}",
+          "${bill.year}",
+          "${bill.createdAt}",
+          "${bill.updatedAt}")''');
     });
-    log('Bill saved');
-    log('new bill id is $id');
+    if (id != 0) {
+      log('Bill saved');
+      log('new bill id is $id');
+    }
+    return id;
+  }
+
+  Future<int> update(BillModel bill) async {
+    var dbClient = await DBHelper().db;
+    return await dbClient!
+        .update(TABLE, bill.toJson(), where: '$ID = ?', whereArgs: [bill.id]);
+  }
+
+  Future getOneMonthBillOfConnection(
+      {required int? connectionId,
+      required int? locationId,
+      required String? month,
+      required String? year}) async {
+    var dbClient = await DBHelper().db;
+    var table = await dbClient!.query(TABLE,
+        columns: [
+          ID,
+          CONNECTIONID,
+          LOCATIONID,
+          AMOUNT,
+          MONTH,
+          YEAR,
+          STATUS,
+          CREATEDAT,
+          UPDATEDAT
+        ],
+        where:
+            " $CONNECTIONID == $connectionId and $LOCATIONID == $locationId and $MONTH == '$month' and $YEAR == '$year'"
+        //     "$MONTH == 'January'",
+        );
+    if (table.isEmpty) {
+      log('Bill Not Found');
+    }
+
+    return table;
+  }
+
+  Future totalBillAmountPaid() async {
+    var dbClient = await DBHelper().db;
+    var amount = await dbClient!.rawQuery(
+        'Select SUM($AMOUNT) as Total FROM $TABLE where $STATUS == "$paid"');
+    log(amount[0]['Total'].toString());
+
+    return amount[0]['Total'] ?? 0;
   }
 }

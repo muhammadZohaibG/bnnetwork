@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:b_networks/models/connection_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'b_network_db.dart';
@@ -18,42 +19,51 @@ class Connections {
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 
-  Future getConnections() async {
+  Future getConnections({required int? locationId}) async {
     var dbClient = await DBHelper().db;
-    var table = await dbClient!.query(
-      TABLE,
-      columns: [
-        ID,
-        LOCATIONID,
-        FULLNAME,
-        ADDRESS,
-        ISACTIVE,
-        MOBILE,
-        CREATEDAT,
-        UPDATEDAT
-      ],
-      // where: "$ISACTIVE == 1"
-    );
+    // var tempTable = await dbClient!.rawQuery(''' Select  ''');
+    var table = await dbClient!
+        .rawQuery('''select * from $TABLE ORDER BY ($CREATEDAT) DESC''');
+    // var table = await dbClient!.query(
+    //   TABLE,
+    //   columns: [
+    //     ID,
+    //     LOCATIONID,
+    //     FULLNAME,
+    //     ADDRESS,
+    //     ISACTIVE,
+    //     MOBILE,
+    //     CREATEDAT,
+    //     UPDATEDAT
+    //   ],
+    //   orderBy: CREATEDAT,
+    //   where: "$ISACTIVE == 1 and $LOCATIONID == $locationId ",
+    // );
+    List<Map<String, dynamic>>? maps;
     if (table.isEmpty) {
       log('Connection Not Found');
-      return [];
-    } else {
-      List<Map<String, dynamic>> maps = table;
-      log(maps.toString());
       return maps;
     }
+
+    return table;
   }
 
-  Future addConnection() async {
+  Future addConnection(ConnectionModel connection) async {
     var dbClient = await DBHelper().db;
     int? id = await dbClient!.transaction((txn) async {
       log('inserting');
 
       return await txn.rawInsert(
           '''INSERT INTO $TABLE ($FULLNAME,$LOCATIONID, $ADDRESS, $MOBILE,  $CREATEDAT, $UPDATEDAT) 
-          VALUES("Talha",1 , "House # 111, st# 3, Islamabad", "03211234567","2023-01-31 11:30:13.426658","2023-01-31 11:30:13.426658")''');
+          VALUES("${connection.fullName}",
+          ${connection.locationId}, 
+          "${connection.address}", "${connection.mobile}",
+          "${connection.createdAt}","${connection.updatedAt}")''');
     });
-    log('Connection saved');
-    log('new connection id is $id');
+    if (id != 0) {
+      log('Connection saved');
+      log('new connection id is $id');
+    }
+    return id;
   }
 }

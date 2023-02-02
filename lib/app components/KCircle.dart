@@ -1,4 +1,4 @@
-import 'package:b_networks/views/AppInformation/screen/app_info_page.dart';
+import 'package:b_networks/views/app_information/screen/app_info_page.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/KColors.dart';

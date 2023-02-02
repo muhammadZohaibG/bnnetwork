@@ -5,8 +5,8 @@ import 'package:b_networks/app%20components/KExpenseLongCard.dart';
 import 'package:b_networks/app%20components/KMainButton.dart';
 import 'package:b_networks/app%20components/KUnderTopBar.dart';
 import 'package:b_networks/app%20components/app_components.dart';
-import 'package:b_networks/views/ExpensesPage/components/expenses_topbar.dart';
-import 'package:b_networks/views/ExpensesPage/provider/expenses_provider.dart';
+import 'package:b_networks/views/expense/components/expenses_topbar.dart';
+import 'package:b_networks/views/expense/provider/expenses_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +23,7 @@ class ExpensesPage extends StatefulWidget {
 }
 
 class _ExpensesPageState extends State<ExpensesPage> {
+  ExpensesProvider? expensesProvider;
   @override
   void initState() {
     function();
@@ -30,12 +31,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
   }
 
   function() async {
-    final expenseProvider =
-        Provider.of<ExpensesProvider>(context, listen: false);
+    expensesProvider = Provider.of<ExpensesProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await expenseProvider.getExpenses();
+      await expensesProvider!.getExpenses();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   KDialogBox kDialogBox = KDialogBox();
@@ -53,12 +58,13 @@ class _ExpensesPageState extends State<ExpensesPage> {
   String? newAmount;
 
   final formKey = GlobalKey<FormState>();
+  KColors kColors = KColors();
   @override
   Widget build(BuildContext context) {
-    KColors kColors = KColors();
     return Scaffold(
       backgroundColor: kColors.screenBG,
       body: Consumer<ExpensesProvider>(
+        child: Container(),
         builder: (context, expenseProvider, child) => Column(children: [
           const Padding(
               padding: EdgeInsets.only(bottom: 10), child: ExpensesTopBar()),
@@ -71,7 +77,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   children: [
                     KUnderTopBar(
                         leftText: "Expenses List",
-                        rightWidget: const KCalendarButton()),
+                        rightWidget: KCalendarButton()),
                     const SizedBox(height: 10),
                     KTextField(
                         controller: expenseProvider.expenseSearchController,

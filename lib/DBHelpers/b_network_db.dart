@@ -6,6 +6,7 @@ import 'dart:io' as io;
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/locations.dart';
+import 'package:b_networks/utils/const.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -69,7 +70,7 @@ class DBHelper {
          ${Bills.AMOUNT} INTEGER NOT NULL, 
          ${Bills.MONTH} TEXT NOT NULL, 
          ${Bills.YEAR} TEXT NOT NULL, 
-         ${Bills.STATUS} TEXT DEFAULT Pending, 
+         ${Bills.STATUS} TEXT DEFAULT $pending, 
          ${Bills.CREATEDAT} TEXT NOT NULL, 
          ${Bills.UPDATEDAT} TEXT NOT NULL, 
          FOREIGN KEY (${Bills.LOCATIONID}) REFERENCES ${Locations.TABLE}(id) ON DELETE NO ACTION ON UPDATE NO ACTION, 
@@ -78,11 +79,11 @@ class DBHelper {
     log('DB Created');
   }
 
-  _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  /* _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < newVersion) {
       await db.execute(
           'CREATE TABLE ${Connections.TABLE} (${Connections.ID} INTEGER PRIMARY KEY NOT NULL, ${Connections.LOCATIONID} INTEGER NOT NULL, ${Connections.FULLNAME} TEXT NOT NULL, ${Connections.ADDRESS} TEXT NOT NULL, ${Connections.MOBILE} TEXT NOT NULL, ${Connections.ISACTIVE} INTEGER DEFAULT 1, ${Connections.CREATEDAT} TEXT NOT NULL, ${Connections.UPDATEDAT} TEXT NOT NULL FOREIGN KEY (${Connections.LOCATIONID}) REFERENCES ${Locations.TABLE} (id))');
     }
     log('Connection Table created');
-  }
+  }*/
 }

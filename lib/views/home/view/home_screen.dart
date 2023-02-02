@@ -20,7 +20,8 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../utils/KColors.dart';
 import '../../../app components/kCityLongCard.dart';
-import '../../ExpensesPage/view/expenses_screen.dart';
+import '../../city_details/screen/city_details_screen.dart';
+import '../../expense/view/expenses_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -77,6 +78,7 @@ class _HomePageState extends State<HomePage> {
       // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
       await homeProvider.calculateExpenses();
       await homeProvider.getLocations();
+      await homeProvider.calculateTotalEarnings();
     });
 
     //await locations.getLocations();
@@ -103,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 KUnderTopBar(
                                   leftText: "Overall Statistics",
-                                  rightWidget: const KCalendarButton(),
+                                  rightWidget: KCalendarButton(),
                                 ),
                                 const SizedBox(height: 20),
                                 // StreamBuilder(
@@ -124,7 +126,8 @@ class _HomePageState extends State<HomePage> {
                                 //   },
                                 // ),
                                 KStatsCards(
-                                    totalEarning: 75000,
+                                    totalEarning:
+                                        homeProvider.totalEarnings!, //75000,
                                     totalExpense: homeProvider.totalExpenses!,
                                     earningOnTap: () {
                                       Navigator.push(
@@ -152,12 +155,14 @@ class _HomePageState extends State<HomePage> {
                                     ? HomeScreenComponents()
                                         .shimmerList(context)
                                     : homeProvider.locations!.isEmpty
-                                        ? Text(
-                                            'No Locations To Show',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: KColors().darkGrey,
-                                                fontWeight: FontWeight.w500),
+                                        ? Center(
+                                            child: Text(
+                                              'No Locations To Show',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: KColors().darkGrey,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
                                           )
                                         : ListView.builder(
                                             shrinkWrap: true,
@@ -170,19 +175,44 @@ class _HomePageState extends State<HomePage> {
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10),
-                                                child: KCityLongCard(
-                                                    activeUsers:
-                                                        34, //cityActiveUsers[i],
-                                                    cityName: homeProvider
-                                                        .locations![index].name!
-                                                        .toString()),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => CityDetailsPage(
+                                                                cityName: homeProvider
+                                                                    .locations![
+                                                                        index]
+                                                                    .name!
+                                                                    .toString(),
+                                                                locationId: homeProvider
+                                                                    .locations![
+                                                                        index]
+                                                                    .id))).then(
+                                                        (value) => homeProvider
+                                                            .calculateTotalEarnings());
+                                                  },
+                                                  child: KCityLongCard(
+                                                      activeUsers: homeProvider
+                                                          .locations![index]
+                                                          .activeConnections!, //cityActiveUsers[i],
+                                                      cityName: homeProvider
+                                                          .locations![index]
+                                                          .name!
+                                                          .toString(),
+                                                      locationId: homeProvider
+                                                          .locations![index]
+                                                          .id),
+                                                ),
                                               );
                                             })
                               ])))),
               KMainButton(
                   text: "Add Service Location",
                   onPressed: () async {
-                    KDialogBox().showDialogBox(
+                    homeProvider.getLocations();
+                    /* KDialogBox().showDialogBox(
                         dialogBoxHeight: 154,
                         buttonText: "Add new",
                         onButtonPress: () async {
@@ -223,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           ),
-                        ]);
+                        ]);*/
                   }),
             ],
           );

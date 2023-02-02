@@ -1,3 +1,4 @@
+import 'package:b_networks/utils/const.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/KColors.dart';
@@ -59,9 +60,8 @@ class KLongCustomCard extends StatelessWidget {
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: billStatus == "paid"
-                          ? kColors.accept
-                          : kColors.decline,
+                      color:
+                          billStatus == paid ? kColors.accept : kColors.decline,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     height: 22,

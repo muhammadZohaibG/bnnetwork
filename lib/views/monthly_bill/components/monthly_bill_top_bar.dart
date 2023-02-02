@@ -16,13 +16,8 @@ class UserDetailsTopBar extends StatelessWidget {
       leftFlex: 2,
       leftWidget: Row(
         children: [
-          KLogo(
-            logoRadius: 45,
-            logoFontSize: 16,
-          ),
-          const SizedBox(
-            width: 7,
-          ),
+          KLogo(logoRadius: 45, logoFontSize: 16),
+          const SizedBox(width: 7),
           Text(
             userName,
             style: TextStyle(

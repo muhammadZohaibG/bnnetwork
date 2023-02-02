@@ -11,6 +11,7 @@ class KTextField extends StatelessWidget {
   void Function(String)? onChanged;
   String? Function(String?)? validator;
   TextEditingController? controller;
+  bool? enabled;
   KTextField(
       {super.key,
       this.suffix,
@@ -18,12 +19,14 @@ class KTextField extends StatelessWidget {
       this.controller,
       this.hintText,
       this.validator,
+      this.enabled = true,
       this.keyboardType = TextInputType.text,
       this.color});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: enabled,
       controller: controller,
       onChanged: onChanged,
       validator: validator,

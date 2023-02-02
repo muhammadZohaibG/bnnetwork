@@ -1,13 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../utils/KColors.dart';
 
 class KCalendarButton extends StatelessWidget {
-  const KCalendarButton({
-    super.key,
-  });
+  KCalendarButton({super.key});
+  String currentMonth = DateFormat('MMMM').format(DateTime.now());
+  String currentYear = DateFormat('y').format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class KCalendarButton extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          "Feb 2023",
+          " $currentMonth $currentYear ",
           maxLines: 1,
           style: TextStyle(
               fontSize: 18,

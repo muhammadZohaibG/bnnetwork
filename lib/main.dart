@@ -1,7 +1,8 @@
 import 'package:b_networks/splash_screen.dart';
-import 'package:b_networks/views/CityDetailPage/provider/city_detail_provider.dart';
-import 'package:b_networks/views/ExpensesPage/provider/expenses_provider.dart';
+import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
+import 'package:b_networks/views/expense/provider/expenses_provider.dart';
 import 'package:b_networks/views/home/provider/home_provider.dart';
+import 'package:b_networks/views/monthly_bill/provider/monthly_bill_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => ExpensesProvider(), lazy: false),
         ChangeNotifierProvider(
-            create: (context) => CityDetailProvider(), lazy: false)
+            create: (context) => CityDetailProvider(), lazy: false),
+        ChangeNotifierProvider(
+            create: (context) => MonthlyBillProvider(), lazy: false)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

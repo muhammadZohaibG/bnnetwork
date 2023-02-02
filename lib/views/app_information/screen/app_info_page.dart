@@ -1,4 +1,4 @@
-import 'package:b_networks/views/AppInformation/components/app_info_topbar.dart';
+import 'package:b_networks/views/app_information/components/app_info_topbar.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/KColors.dart';

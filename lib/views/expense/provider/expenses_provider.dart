@@ -17,6 +17,13 @@ class ExpensesProvider extends ChangeNotifier {
   List<ExpenseModel>? expensesList = [];
 
   List<ExpenseModel>? searchExpenseList = [];
+  String currentMonth = DateFormat('MMMM').format(DateTime.now());
+  String currentYear = DateFormat('y').format(DateTime.now());
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   updateLoader(bool value) {
     isLoading = value;
@@ -45,10 +52,11 @@ class ExpensesProvider extends ChangeNotifier {
 
   Future getExpenses() async {
     try {
-      emptyExpense();
       updateLoader(true);
+      emptyExpense();
       await Future.delayed(const Duration(seconds: 1));
-      List<Map<String, dynamic>> maps = await expensesDb.getExpenses();
+      List<Map<String, dynamic>> maps =
+          await expensesDb.getExpenses(month: currentMonth) ?? [];
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
           addInExpensesList(ExpenseModel.fromJson(maps[i]));
@@ -57,6 +65,7 @@ class ExpensesProvider extends ChangeNotifier {
       updateLoader(false);
     } catch (e) {
       log(e.toString());
+      updateLoader(false);
     }
   }
 

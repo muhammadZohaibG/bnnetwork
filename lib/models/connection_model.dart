@@ -12,14 +12,14 @@ String connectionModelToJson(ConnectionModel data) =>
 
 class ConnectionModel {
   ConnectionModel({
-    required this.id,
-    required this.locationId,
-    required this.fullName,
-    required this.address,
-    required this.isActive,
-    required this.mobile,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.locationId,
+    this.fullName,
+    this.address,
+    this.isActive,
+    this.mobile,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int? id;

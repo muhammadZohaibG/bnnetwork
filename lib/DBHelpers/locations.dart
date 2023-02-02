@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/b_network_db.dart';
+import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/models/location_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -21,12 +22,35 @@ class Locations {
       columns: [ID, NAME, CREATEDAT, UPDATEDAT],
       //where: "$CREATEDAT< '2023-01-30'"
     );
+
+    List<Map<String, dynamic>> map = [];
+
     if (table.isEmpty) {
       log('Location Not Found');
-      return [];
-    } else {
-      return table;
     }
+    //map = table;
+    if (table.isNotEmpty) {
+      for (int i = 0; i < table.length; i++) {
+        var count = await dbClient.rawQuery(
+            ''' Select Count (*) as active_connections from ${Connections.TABLE} where 
+            ${Connections.LOCATIONID} == ${table[i][ID]} and ${Connections.ISACTIVE} == 1
+            ''');
+
+        List<Map<String, dynamic>>? mapItem = [];
+        mapItem.add({
+          ID: table[i][ID],
+          NAME: table[i][NAME],
+          'active_connections': count[0]["active_connections"],
+          CREATEDAT: table[i][CREATEDAT],
+          UPDATEDAT: table[i][UPDATEDAT],
+        });
+
+        map.add(mapItem[0]);
+      }
+    }
+    log(map.toList().toString());
+
+    return map;
   }
 
   Future addLocation(LocationModel location) async {

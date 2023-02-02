@@ -10,21 +10,21 @@ String billModelToJson(BillModel data) => json.encode(data.toJson());
 
 class BillModel {
   BillModel({
-    required this.id,
-    required this.locationId,
-    required this.connectionId,
-    required this.amount,
-    required this.month,
-    required this.year,
-    required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.locationId,
+    this.connectionId,
+    this.amount,
+    this.month,
+    this.year,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int? id;
   int? locationId;
   int? connectionId;
-  String? amount;
+  int? amount;
   String? month;
   String? year;
   String? status;
