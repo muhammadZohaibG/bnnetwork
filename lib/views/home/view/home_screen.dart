@@ -76,12 +76,26 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(const Duration(seconds: 2));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
-      await homeProvider.calculateExpenses();
+      // await homeProvider.calculateExpenses();
       await homeProvider.getLocations();
-      await homeProvider.calculateTotalEarnings();
+      // await homeProvider.calculateTotalEarnings();
+      // await homeProvider.getConnectionsStats();
+      await getOverallStats();
     });
 
     //await locations.getLocations();
+  }
+
+  getOverallStats() async {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
+      await homeProvider.calculateExpenses();
+
+      await homeProvider.calculateTotalEarnings();
+      await homeProvider.getConnectionsStats();
+    });
   }
 
   @override
@@ -89,7 +103,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: KColors().screenBG,
         body: Consumer<HomeProvider>(builder: (context, homeProvider, child) {
-          //  homeProvider.getLocations();
           return Column(
             children: [
               const Padding(
@@ -108,40 +121,39 @@ class _HomePageState extends State<HomePage> {
                                   rightWidget: KCalendarButton(),
                                 ),
                                 const SizedBox(height: 20),
-                                // StreamBuilder(
-                                //   stream: homeProvider.totalExpenseStream,
-                                //   builder: (context, snapshot) {
-                                //     if (snapshot.connectionState ==
-                                //         ConnectionState.waiting) {
-                                //       return KStatsCards(
-                                //           totalEarning: 0, totalExpense: 0);
-                                //     }
-                                //     if (!snapshot.hasData ||
-                                //         (snapshot.data == null)) {
-                                //       return KStatsCards(
-                                //           totalEarning: 0, totalExpense: 0);
-                                //     }
-                                //     return KStatsCards(
-                                //         totalEarning: 0, totalExpense: 0);
-                                //   },
-                                // ),
                                 KStatsCards(
                                     totalEarning:
                                         homeProvider.totalEarnings!, //75000,
                                     totalExpense: homeProvider.totalExpenses!,
                                     earningOnTap: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ExpensesPage())).then(
-                                          (value) =>
-                                              homeProvider.calculateExpenses());
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const ExpensesPage()))
+                                          .then((value) => getOverallStats());
                                     }),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    getOverallStats();
+                                  },
+                                  child: Text("Connections",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: KColors().darkGrey,
+                                          fontWeight: FontWeight.w500)),
+                                ),
+                                const SizedBox(height: 10),
+                                HomeScreenComponents().connectionsStatsRow(
+                                    totalConnections:
+                                        homeProvider.totalActiveConnections!,
+                                    totalUnpaidConnections: homeProvider
+                                        .totalPendingPaymentConnections!),
+                                const SizedBox(height: 20),
                                 InkWell(
                                   onTap: () {
-                                    homeProvider.calculateExpenses();
+                                    getOverallStats();
                                   },
                                   child: Text(
                                     "Service Locations",
@@ -166,6 +178,7 @@ class _HomePageState extends State<HomePage> {
                                           )
                                         : ListView.builder(
                                             shrinkWrap: true,
+                                            padding: const EdgeInsets.all(0),
                                             physics:
                                                 const NeverScrollableScrollPhysics(),
                                             itemCount:
@@ -190,8 +203,8 @@ class _HomePageState extends State<HomePage> {
                                                                     .locations![
                                                                         index]
                                                                     .id))).then(
-                                                        (value) => homeProvider
-                                                            .calculateTotalEarnings());
+                                                        (value) =>
+                                                            getOverallStats());
                                                   },
                                                   child: KCityLongCard(
                                                       activeUsers: homeProvider
@@ -209,10 +222,10 @@ class _HomePageState extends State<HomePage> {
                                             })
                               ])))),
               KMainButton(
-                  text: "Add Service Location",
+                  text: "Add Service Area",
                   onPressed: () async {
-                    homeProvider.getLocations();
-                    /* KDialogBox().showDialogBox(
+                    // homeProvider.getLocations();
+                    KDialogBox().showDialogBox(
                         dialogBoxHeight: 154,
                         buttonText: "Add new",
                         onButtonPress: () async {
@@ -253,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           ),
-                        ]);*/
+                        ]);
                   }),
             ],
           );

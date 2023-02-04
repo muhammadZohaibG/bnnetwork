@@ -9,6 +9,7 @@ import 'package:b_networks/app%20components/KUnderTopBar.dart';
 import 'package:b_networks/app%20components/KLongCustomCard.dart';
 import 'package:b_networks/views/city_details/components/components.dart';
 import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
+import 'package:b_networks/views/home/provider/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
 
   KColors kColors = KColors();
   final formKey = GlobalKey<FormState>();
+  HomeProvider? _homeProvider;
 
   @override
   void initState() {
@@ -56,6 +58,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
   function() async {
     final cityDetailProvider =
         Provider.of<CityDetailProvider>(context, listen: false);
+    _homeProvider = Provider.of<HomeProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await cityDetailProvider.getAllConnections(locationId: widget.locationId);
     });
@@ -182,87 +185,95 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
               text: "Add New User",
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                kDialogBox.showDialogBox(
-                    dialogBoxHeight: 230,
-                    buttonText: "Add User",
-                    onButtonPress: () async {
-                      if (formKey.currentState!.validate()) {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        //
-                        bool? res = await cityDetailProvider.addConnection(
-                            locationid: widget.locationId);
-                        if (res) {
-                          if (!mounted) return;
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                    context: context,
-                    widgets: <Widget>[
-                      Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Add user to ${widget.cityName}",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: kColors.statsUnderText,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(height: 20),
-                            KTextField(
-                              controller: cityDetailProvider.nameController,
-                              validator: (v) {
-                                if (v!.isEmpty) {
-                                  return 'Enter name';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                newUser = value;
-                              },
-                              hintText: "Full Name",
-                            ),
-                            const SizedBox(height: 20),
-                            KTextField(
-                              controller: cityDetailProvider
-                                  .locationTextFieldController,
-                              keyboardType: TextInputType.streetAddress,
-                              validator: (v) {
-                                if (v!.isEmpty) {
-                                  return 'Enter address';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                newAddress = value;
-                              },
-                              hintText: "Address",
-                            ),
-                            const SizedBox(height: 20),
-                            KTextField(
-                              controller:
-                                  cityDetailProvider.mobileFieldController,
-                              keyboardType: TextInputType.number,
-                              validator: (v) {
-                                if (v!.isEmpty) {
-                                  return 'Enter mobile number';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                newAddress = value;
-                              },
-                              hintText: "Mobile",
-                            )
-                          ],
-                        ),
-                      ),
-                    ]);
+                cityDetailProvider.getAllConnections(
+                    locationId: widget.locationId);
+                // showAddUserDialog();
               }),
         ]),
       ),
     );
+  }
+
+  showAddUserDialog() {
+    final cityDetailProvider =
+        Provider.of<CityDetailProvider>(context, listen: false);
+    return kDialogBox.showDialogBox(
+        dialogBoxHeight: 230,
+        buttonText: "Add User",
+        onButtonPress: () async {
+          if (formKey.currentState!.validate()) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            //
+            bool? res = await cityDetailProvider.addConnection(
+                locationid: widget.locationId);
+            if (res) {
+              if (!mounted) return;
+              Navigator.of(context).pop();
+              _homeProvider!
+                  .increamentLocationActiveUsers(locationId: widget.locationId);
+            }
+          }
+        },
+        context: context,
+        widgets: <Widget>[
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
+                Text(
+                  "Add user to ${widget.cityName}",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: kColors.statsUnderText,
+                      fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.nameController,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter name';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newUser = value;
+                  },
+                  hintText: "Full Name",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.locationTextFieldController,
+                  keyboardType: TextInputType.streetAddress,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter address';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "Address",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.mobileFieldController,
+                  keyboardType: TextInputType.number,
+                  validator: (v) {
+                    // if (v!.isEmpty) {
+                    //   return 'Enter mobile number';
+                    // }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "Mobile",
+                )
+              ],
+            ),
+          ),
+        ]);
   }
 }

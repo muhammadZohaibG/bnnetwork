@@ -52,10 +52,10 @@ class Expenses {
     return id;
   }
 
-  Future totalExpenses() async {
+  Future totalExpenses({required String? month, required String? year}) async {
     var dbClient = await DBHelper().db;
-    var amount =
-        await dbClient!.rawQuery('Select SUM($AMOUNT) as Total FROM $TABLE');
+    var amount = await dbClient!.rawQuery(
+        'Select SUM($AMOUNT) as Total FROM $TABLE where $MONTH = "$month" and $YEAR = "$year"');
     log(amount[0]['Total'].toString());
 
     return amount[0]['Total'] ?? 0;

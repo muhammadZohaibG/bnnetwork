@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/models/connection_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -19,31 +20,30 @@ class Connections {
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 
-  Future getConnections({required int? locationId}) async {
+  Future getConnections(
+      {required int? locationId,
+      required String? month,
+      required String? year}) async {
     var dbClient = await DBHelper().db;
     // var tempTable = await dbClient!.rawQuery(''' Select  ''');
-    var table = await dbClient!
-        .rawQuery('''select * from $TABLE ORDER BY ($CREATEDAT) DESC''');
-    // var table = await dbClient!.query(
-    //   TABLE,
-    //   columns: [
-    //     ID,
-    //     LOCATIONID,
-    //     FULLNAME,
-    //     ADDRESS,
-    //     ISACTIVE,
-    //     MOBILE,
-    //     CREATEDAT,
-    //     UPDATEDAT
-    //   ],
-    //   orderBy: CREATEDAT,
-    //   where: "$ISACTIVE == 1 and $LOCATIONID == $locationId ",
-    // );
-    List<Map<String, dynamic>>? maps;
+
+    var table = await dbClient!.rawQuery(
+        '''select ${Connections.ID} as $ID,  $FULLNAME, $LOCATIONID, $ADDRESS, $ISACTIVE, $MOBILE, $CREATEDAT, $UPDATEDAT
+         from $TABLE where $ISACTIVE == 1 and $LOCATIONID = $locationId  ORDER BY ($CREATEDAT) DESC''');
+
+    var testTable = await dbClient.rawQuery(
+        '''Select $TABLE.$ID, $TABLE.$FULLNAME, $TABLE.$LOCATIONID, $TABLE.$ADDRESS, 
+        $TABLE.$ISACTIVE, $TABLE.$MOBILE, $TABLE.$CREATEDAT, $TABLE.$UPDATEDAT,
+        ${Bills.TABLE}.${Bills.STATUS} as payment_status from $TABLE 
+        INNER JOIN ${Bills.TABLE} ON ${Bills.TABLE}.${Bills.CONNECTIONID} = $TABLE.$ID 
+        and ${Bills.TABLE}.${Bills.LOCATIONID} = $TABLE.$LOCATIONID
+        and ${Bills.TABLE}.${Bills.MONTH} = "$month" and ${Bills.TABLE}.${Bills.YEAR} = "$year" 
+        where $TABLE.$ISACTIVE = 1 and $TABLE.$LOCATIONID = $locationId ORDER BY ($TABLE.$CREATEDAT) DESC''');
+
     if (table.isEmpty) {
       log('Connection Not Found');
-      return maps;
     }
+    log(testTable.toList().toString());
 
     return table;
   }
@@ -65,5 +65,14 @@ class Connections {
       log('new connection id is $id');
     }
     return id;
+  }
+
+  Future countActiveConnections() async {
+    var dbClient = await DBHelper().db;
+    int? total = Sqflite.firstIntValue(await dbClient!
+        .rawQuery('Select Count(*)  as total from $TABLE where $ISACTIVE = 1'));
+
+    log('total active: $total');
+    return total;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/bills.dart';
+import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
 import 'package:b_networks/models/location_model.dart';
 import 'package:b_networks/models/location_with_active_connections_model.dart';
@@ -18,11 +19,16 @@ class HomeProvider extends ChangeNotifier {
   var locationDb = Locations();
   var expenseDb = Expenses();
   var billsDb = Bills();
+  var connectionsDb = Connections();
   bool? isLoading = true;
   List<LocationWithActiveConnectionsModel>? locations = [];
   int? selectedIndex;
   int? totalExpenses = 0;
   int? totalEarnings = 0;
+  int? totalActiveConnections = 0;
+  int? totalPendingPaymentConnections = 0;
+  String currentMonth = DateFormat('MMMM').format(DateTime.now());
+  String currentYear = DateFormat('y').format(DateTime.now());
 
   late Stream<int?> totalExpenseStream;
   StreamController<int?> totalExpenseStreamController =
@@ -74,6 +80,40 @@ class HomeProvider extends ChangeNotifier {
     // yield * totalExpenseStreamController;
   }
 
+  updatePendingPaidConnections(int value) {
+    totalPendingPaymentConnections = value;
+    notifyListeners();
+  }
+
+  updateTotalActiveConnections(int value) {
+    totalActiveConnections = value;
+    notifyListeners();
+  }
+
+  increamentLocationActiveUsers({required int? locationId}) {
+    for (var location in locations!) {
+      if (location.id == locationId) {
+        location.activeConnections = location.activeConnections! + 1;
+        notifyListeners();
+        break;
+      }
+    }
+  }
+
+  Future getConnectionsStats() async {
+    try {
+      int? totalActive = await connectionsDb.countActiveConnections();
+      updateTotalActiveConnections(totalActive!);
+      log('total active here $totalActiveConnections');
+      int? totalPaid = await billsDb.totalPaidConnections(
+          month: currentMonth, year: currentYear);
+      int? totalUnpaid = totalActive - totalPaid!;
+      updatePendingPaidConnections(totalUnpaid);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future getLocations() async {
     try {
       emptyLocations();
@@ -97,7 +137,8 @@ class HomeProvider extends ChangeNotifier {
 
   Future calculateExpenses() async {
     try {
-      var result = await expenseDb.totalExpenses();
+      var result =
+          await expenseDb.totalExpenses(month: currentMonth, year: currentYear);
 
       updateTotalExpenses(result);
     } catch (e) {
@@ -107,7 +148,8 @@ class HomeProvider extends ChangeNotifier {
 
   Future calculateTotalEarnings() async {
     try {
-      var result = await billsDb.totalBillAmountPaid();
+      var result = await billsDb.totalBillAmountPaid(
+          month: currentMonth, year: currentYear);
 
       updateTotalEarnings(result);
     } catch (e) {
@@ -119,7 +161,6 @@ class HomeProvider extends ChangeNotifier {
     try {
       LocationModel newLocation = LocationModel();
       bool? alreadyAdded = false;
-      //  log(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
 
       for (var e in locations!) {
         if (e.name!.toLowerCase() ==
@@ -135,14 +176,12 @@ class HomeProvider extends ChangeNotifier {
               DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
           ..updatedAt =
               DateTime.parse(DateFormat(dateFormat).format(DateTime.now()));
-
         int? id = await locationDb.addLocation(newLocation);
         if (id == 0) {
           showToast('Failed!');
           return false;
         } else {
           newLocation.id = id;
-
           showToast('Added', backgroundColor: primaryColor);
           locationNameController.clear;
           getLocations();

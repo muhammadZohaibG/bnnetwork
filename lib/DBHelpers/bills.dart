@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:b_networks/DBHelpers/b_network_db.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/utils/const.dart';
+import 'package:sqflite/sqflite.dart';
 
 class Bills {
   static const String TABLE = 'Bills';
@@ -101,12 +102,22 @@ class Bills {
     return table;
   }
 
-  Future totalBillAmountPaid() async {
+  Future totalBillAmountPaid(
+      {required String? month, required String? year}) async {
     var dbClient = await DBHelper().db;
     var amount = await dbClient!.rawQuery(
-        'Select SUM($AMOUNT) as Total FROM $TABLE where $STATUS == "$paid"');
+        'Select SUM($AMOUNT) as Total FROM $TABLE where $STATUS == "$paid" and  $MONTH = "$month" and $YEAR = "$year"');
     log(amount[0]['Total'].toString());
 
     return amount[0]['Total'] ?? 0;
+  }
+
+  Future totalPaidConnections(
+      {required String? month, required String? year}) async {
+    var dbClient = await DBHelper().db;
+    var total = Sqflite.firstIntValue(await dbClient!.rawQuery(
+        'Select Count(*) as total from $TABLE where $STATUS = "$paid" and  $MONTH = "$month" and $YEAR = "$year"'));
+    log('total paid : $total');
+    return total;
   }
 }

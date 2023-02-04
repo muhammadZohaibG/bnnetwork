@@ -5,6 +5,7 @@ import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/const.dart';
 
@@ -77,8 +78,9 @@ class CityDetailProvider extends ChangeNotifier {
       emptyConnectionList();
       updateLoader(true);
       await Future.delayed(const Duration(seconds: 1));
-      List<Map<String, dynamic>> maps =
-          await connectionsDb.getConnections(locationId: locationId) ?? [];
+      List<Map<String, dynamic>> maps = await connectionsDb.getConnections(
+              locationId: locationId, month: currentMonth, year: currentYear) ??
+          [];
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
           addInConnectionsList(ConnectionModel.fromJson(maps[i]));
@@ -95,8 +97,9 @@ class CityDetailProvider extends ChangeNotifier {
       emptyPaidConnectionList();
       updateLoader(true);
       await Future.delayed(const Duration(seconds: 1));
-      List<Map<String, dynamic>> maps =
-          await connectionsDb.getConnections(locationId: locationId) ?? [];
+      List<Map<String, dynamic>> maps = await connectionsDb.getConnections(
+              locationId: locationId, month: currentMonth, year: currentYear) ??
+          [];
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
           addInConnectionsList(ConnectionModel.fromJson(maps[i]));
@@ -113,8 +116,12 @@ class CityDetailProvider extends ChangeNotifier {
       ConnectionModel connection = ConnectionModel()
         ..locationId = locationid
         ..fullName = nameController.value.text.trim()
-        ..address = locationTextFieldController.value.text.trim()
-        ..mobile = mobileFieldController.value.text.trim()
+        ..address = locationTextFieldController.text.isEmpty
+            ? ''
+            : locationTextFieldController.value.text.trim()
+        ..mobile = mobileFieldController.text.isEmpty
+            ? ''
+            : mobileFieldController.value.text.trim()
         ..createdAt =
             DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
         ..updatedAt =
@@ -129,6 +136,7 @@ class CityDetailProvider extends ChangeNotifier {
         locationTextFieldController.clear();
         nameController.clear();
         getAllConnections(locationId: locationid);
+
         return true;
       }
     } catch (e) {
