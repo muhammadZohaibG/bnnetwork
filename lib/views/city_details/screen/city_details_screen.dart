@@ -36,11 +36,6 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
   KDialogBox kDialogBox = KDialogBox();
   String filter = "";
   String searchFilter = "";
-  List<String> userName = ["Emzze", "Exes"];
-
-  List<String> userAddress = ["Pakistan", "Iraq"];
-
-  List<String> userPaidStatus = ["paid", "pending"];
 
   String? newUser;
   String? newAddress;
@@ -86,24 +81,30 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                       rightWidget: KCalendarButton(),
                     ),
                     const SizedBox(height: 10),
+                    CityDetailsScreenComponents()
+                        .totalEarnings(totalEarnings: 900),
+                    const SizedBox(height: 10),
+                    AppComponents().connectionsStatsRow(
+                        totalConnections: 32, totalUnpaidConnections: 4),
+                    const SizedBox(height: 10),
                     KTextField(
-                      controller: cityDetailProvider.searchConnectionController,
-                      onChanged: (value) {
-                        cityDetailProvider.searchConnection();
-                      },
-                      color: Colors.white,
-                      hintText: "Search by user name",
-                      suffix: SizedBox(
-                        height: 55,
-                        width: 65,
-                        child: Center(
-                            child: GestureDetector(
-                                onTap: () {
-                                  log('message');
-                                },
-                                child: Image.asset("assets/icons/search.png"))),
-                      ),
-                    ),
+                        controller:
+                            cityDetailProvider.searchConnectionController,
+                        onChanged: (value) {
+                          cityDetailProvider.searchConnection();
+                        },
+                        color: Colors.white,
+                        hintText: "Search by user name",
+                        suffix: SizedBox(
+                            height: 55,
+                            width: 65,
+                            child: Center(
+                                child: GestureDetector(
+                                    onTap: () {
+                                      log('message');
+                                    },
+                                    child: Image.asset(
+                                        "assets/icons/search.png"))))),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,9 +186,9 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
               text: "Add New User",
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                cityDetailProvider.getAllConnections(
-                    locationId: widget.locationId);
-                // showAddUserDialog();
+                // cityDetailProvider.getAllConnections(
+                //     locationId: widget.locationId);
+                showAddUserDialog();
               }),
         ]),
       ),

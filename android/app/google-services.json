@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "121875343388",
+    "project_id": "b-networks-68649",
+    "storage_bucket": "b-networks-68649.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121875343388:android:d6791011e962dc3ff3d7d9",
+        "android_client_info": {
+          "package_name": "com.elabdtech.b_networks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121875343388-60i5ad0kll21l69607kffnh9nptrpue5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_PnpsznmUjwuQzGWSqDmZXFu610A3zZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121875343388-60i5ad0kll21l69607kffnh9nptrpue5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

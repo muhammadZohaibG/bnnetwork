@@ -15,7 +15,7 @@ class KTopBar extends StatelessWidget {
   KTopBar(
       {super.key,
       this.leftWidget,
-      this.leftFlex = 1,
+      this.leftFlex = 0,
       this.midWidget,
       this.rightWidget,
       this.backArrow = false,

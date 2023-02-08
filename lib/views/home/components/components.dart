@@ -6,62 +6,6 @@ import '../../../app components/kCityLongCard.dart';
 import '../../../utils/KColors.dart';
 
 class HomeScreenComponents {
-  Widget connectionsStatsRow(
-      {required int totalConnections, required int totalUnpaidConnections}) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      Expanded(
-        flex: 2,
-        child: Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total:',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: kdarkGrey,
-                    fontWeight: FontWeight.w600),
-              ),
-              Text(
-                '$totalConnections  ',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: kdarkGrey,
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
-      ),
-      const SizedBox(width: 5),
-      Expanded(
-          flex: 2,
-          child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Pending:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: kdarkGrey,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      '$totalUnpaidConnections  ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: kdarkGrey,
-                          fontWeight: FontWeight.w600),
-                    )
-                  ])))
-    ]);
-  }
-
   Widget shimmerList(BuildContext context) {
     return Shimmer.fromColors(
         enabled: true,

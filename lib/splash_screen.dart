@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/app%20components/KLogo.dart';
 import 'package:b_networks/views/home/view/home_screen.dart';
+import 'package:b_networks/views/login/view/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
-              builder: (BuildContext context) => const HomePage()));
+              builder: (BuildContext context) => const LoginScreen()));
     });
   }
 

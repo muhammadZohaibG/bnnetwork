@@ -7,6 +7,28 @@ import '../../../utils/const.dart';
 import '../../monthly_bill/screen/monthly_bill_list_screen.dart';
 
 class CityDetailsScreenComponents {
+  Widget totalEarnings({required int totalEarnings}) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Total Earnings:',
+            style: TextStyle(
+                fontSize: 16, color: kdarkGrey, fontWeight: FontWeight.w600),
+          ),
+          Text(
+            '$totalEarnings',
+            style: TextStyle(
+                fontSize: 16, color: kdarkGrey, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget connectionsList({required List<ConnectionModel>? connectionsList}) {
     return ListView.builder(
       shrinkWrap: true,

@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../app components/app_components.dart';
 import '../../../utils/KColors.dart';
 import '../../../app components/kCityLongCard.dart';
 import '../../city_details/screen/city_details_screen.dart';
@@ -37,29 +38,6 @@ class _HomePageState extends State<HomePage> {
   var expenses = Expenses();
   var connections = Connections();
   var bill = Bills();
-  List<String> cityNames = [
-    "Lahore",
-    "Islamabad",
-    "Multan",
-    "Peshawar",
-    "Mian Wali",
-    "Kiranchi",
-    "Gujranwala",
-    "Sialkot",
-  ];
-
-  List<int> cityActiveUsers = [30, 20, 14, 67, 87, 45, 98, 31];
-
-  List<String> cityDescription = [
-    "Lahore description",
-    "Islamabad description",
-    "Multan description",
-    "Peshawar description",
-    "Mian Wali description",
-    "Kiranchi description",
-    "Gujranwala description",
-    "Sialkot description",
-  ];
 
   String? newCity;
   final formKey = GlobalKey<FormState>();
@@ -75,11 +53,8 @@ class _HomePageState extends State<HomePage> {
 
     await Future.delayed(const Duration(seconds: 2));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
-      // await homeProvider.calculateExpenses();
       await homeProvider.getLocations();
-      // await homeProvider.calculateTotalEarnings();
-      // await homeProvider.getConnectionsStats();
+
       await getOverallStats();
     });
 
@@ -117,9 +92,8 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 KUnderTopBar(
-                                  leftText: "Overall Statistics",
-                                  rightWidget: KCalendarButton(),
-                                ),
+                                    leftText: "Overall Statistics",
+                                    rightWidget: KCalendarButton()),
                                 const SizedBox(height: 20),
                                 KStatsCards(
                                     totalEarning:
@@ -145,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                           fontWeight: FontWeight.w500)),
                                 ),
                                 const SizedBox(height: 10),
-                                HomeScreenComponents().connectionsStatsRow(
+                                AppComponents().connectionsStatsRow(
                                     totalConnections:
                                         homeProvider.totalActiveConnections!,
                                     totalUnpaidConnections: homeProvider
@@ -168,14 +142,12 @@ class _HomePageState extends State<HomePage> {
                                         .shimmerList(context)
                                     : homeProvider.locations!.isEmpty
                                         ? Center(
-                                            child: Text(
-                                              'No Locations To Show',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: KColors().darkGrey,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          )
+                                            child: Text('No Locations To Show',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: KColors().darkGrey,
+                                                    fontWeight:
+                                                        FontWeight.w500)))
                                         : ListView.builder(
                                             shrinkWrap: true,
                                             padding: const EdgeInsets.all(0),

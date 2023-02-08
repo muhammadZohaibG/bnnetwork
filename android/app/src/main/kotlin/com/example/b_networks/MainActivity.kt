@@ -1,4 +1,4 @@
-package com.example.b_networks
+package com.elabdtech.b_networks
 
 import io.flutter.embedding.android.FlutterActivity
 
