@@ -102,7 +102,7 @@ class Bills {
     return table;
   }
 
-  Future totalBillAmountPaid(
+  Future totalBillAmountPaidOfMonth(
       {required String? month, required String? year}) async {
     var dbClient = await DBHelper().db;
     var amount = await dbClient!.rawQuery(
@@ -112,12 +112,35 @@ class Bills {
     return amount[0]['Total'] ?? 0;
   }
 
-  Future totalPaidConnections(
+  Future totalPaidConnectionsOfMonth(
       {required String? month, required String? year}) async {
     var dbClient = await DBHelper().db;
     var total = Sqflite.firstIntValue(await dbClient!.rawQuery(
         'Select Count(*) as total from $TABLE where $STATUS = "$paid" and  $MONTH = "$month" and $YEAR = "$year"'));
     log('total paid : $total');
     return total;
+  }
+
+  Future totalPaidConnectionsOfLocation(
+      {required String? month,
+      required String? year,
+      required int locationId}) async {
+    var dbClient = await DBHelper().db;
+    var total = Sqflite.firstIntValue(await dbClient!.rawQuery(
+        'Select Count(*) as total from $TABLE where $STATUS = "$paid" and $LOCATIONID = $locationId and  $MONTH = "$month" and $YEAR = "$year"'));
+    log('total paid : $total');
+    return total;
+  }
+
+  Future totalLocationEarningOfMonth(
+      {required String? month,
+      required String? year,
+      required int locationId}) async {
+    var dbClient = await DBHelper().db;
+    var amount = await dbClient!.rawQuery(
+        'Select SUM($AMOUNT) as Total FROM $TABLE where $STATUS == "$paid" and $LOCATIONID = $locationId and  $MONTH = "$month" and $YEAR = "$year"');
+    log(amount[0]['Total'].toString());
+
+    return amount[0]['Total'] ?? 0;
   }
 }

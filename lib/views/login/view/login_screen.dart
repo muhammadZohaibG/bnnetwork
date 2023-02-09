@@ -27,13 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(children: [
             const Padding(
-              padding: EdgeInsets.only(bottom: 10),
-              child: LoginTopBar(),
-            ),
+                padding: EdgeInsets.only(bottom: 10), child: LoginTopBar()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.asset("assets/images/app_info.png"),
                   Text('Simplified the way of connections',
@@ -59,12 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: [
                                     LoginScreenComponents()
                                         .socialButton(context, onTap: () async {
-                                      // loginProvider.updateLoading(true);
-                                      // await Future.delayed(
-                                      //     const Duration(seconds: 3), () {
-                                      //   loginProvider.updateLoading(false);
-                                      // });
-
                                       bool? res =
                                           await loginProvider.loginWithGoogle();
                                       log(res.toString());
@@ -77,9 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     const HomePage()));
                                       } else {}
                                     }),
-                                    KMainButton(
-                                        text: 'Continue as Guest',
-                                        onPressed: () {}),
+                                    // KMainButton(
+                                    //     text: 'Continue as Guest',
+                                    //     onPressed: () async {
+                                    //       loginProvider.signOut();
+                                    //     }),
                                   ],
                                 )),
                   const SizedBox(height: 17),

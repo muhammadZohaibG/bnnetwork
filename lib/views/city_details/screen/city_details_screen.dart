@@ -55,7 +55,10 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
         Provider.of<CityDetailProvider>(context, listen: false);
     _homeProvider = Provider.of<HomeProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await cityDetailProvider.getAllConnections(locationId: widget.locationId);
+      await cityDetailProvider.getAllConnectionsOfLocation(
+          locationId: widget.locationId);
+      await cityDetailProvider.getLocationConnectionsStats(
+          locationId: widget.locationId!);
     });
   }
 
@@ -81,11 +84,15 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                       rightWidget: KCalendarButton(),
                     ),
                     const SizedBox(height: 10),
-                    CityDetailsScreenComponents()
-                        .totalEarnings(totalEarnings: 900),
+                    CityDetailsScreenComponents().totalEarnings(
+                        totalEarnings:
+                            cityDetailProvider.totalEarningOfLocationInMonth!),
                     const SizedBox(height: 10),
                     AppComponents().connectionsStatsRow(
-                        totalConnections: 32, totalUnpaidConnections: 4),
+                        totalConnections:
+                            cityDetailProvider.locationActiveConnections!,
+                        totalUnpaidConnections:
+                            cityDetailProvider.locationPendingConnections!),
                     const SizedBox(height: 10),
                     KTextField(
                         controller:
@@ -164,19 +171,29 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                         : cityDetailProvider.connectionsList.isEmpty
                             ? CityDetailsScreenComponents()
                                 .noConnectionsToShow()
-                            : cityDetailProvider.searchConnectionController
-                                    .value.text.isEmpty
-                                ? CityDetailsScreenComponents().connectionsList(
-                                    connectionsList: cityDetailProvider
-                                        .connectionsList)
+                            : cityDetailProvider.searchConnectionController.value
+                                    .text.isEmpty
+                                ? //show searched connections
+                                CityDetailsScreenComponents().connectionsList(
+                                    connectionsList:
+                                        cityDetailProvider.connectionsList,
+                                    onTap: () => cityDetailProvider
+                                        .getLocationConnectionsStats(
+                                            locationId: widget.locationId!))
                                 : cityDetailProvider
                                         .searchedConnectionsList.isEmpty
-                                    ? CityDetailsScreenComponents()
+                                    ? //if no connections over all witout search
+                                    CityDetailsScreenComponents()
                                         .noConnectionsToShow()
-                                    : CityDetailsScreenComponents()
+                                    : //show overall connections
+                                    CityDetailsScreenComponents()
                                         .connectionsList(
                                             connectionsList: cityDetailProvider
-                                                .searchedConnectionsList)
+                                                .searchedConnectionsList,
+                                            onTap: () => cityDetailProvider
+                                                .getLocationConnectionsStats(
+                                                    locationId:
+                                                        widget.locationId!))
                   ],
                 ),
               ),
@@ -186,7 +203,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
               text: "Add New User",
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                // cityDetailProvider.getAllConnections(
+                // cityDetailProvider.getAllConnectionsOfLocation(
                 //     locationId: widget.locationId);
                 showAddUserDialog();
               }),

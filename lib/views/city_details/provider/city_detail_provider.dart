@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/models/connection_model.dart';
+import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -12,10 +14,11 @@ import '../../../utils/const.dart';
 class CityDetailProvider extends ChangeNotifier {
   bool? isLoading = false;
   var connectionsDb = Connections();
-  List<ConnectionModel> connectionsList = [];
-  List<ConnectionModel> paidConnectionsList = [];
-  List<ConnectionModel> pendingConnectionsList = [];
-  List<ConnectionModel> searchedConnectionsList = [];
+  var billsDb = Bills();
+  List<LocationConnectionsWithPaymentModel> connectionsList = [];
+  List<LocationConnectionsWithPaymentModel> paidConnectionsList = [];
+  List<LocationConnectionsWithPaymentModel> pendingConnectionsList = [];
+  List<LocationConnectionsWithPaymentModel> searchedConnectionsList = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController locationTextFieldController = TextEditingController();
   TextEditingController mobileFieldController = TextEditingController();
@@ -23,27 +26,46 @@ class CityDetailProvider extends ChangeNotifier {
   String currentMonth = DateFormat('MMMM').format(DateTime.now());
   String currentYear = DateFormat('y').format(DateTime.now());
 
+  int? locationActiveConnections = 0;
+  int? locationPendingConnections = 0;
+  int? totalEarningOfLocationInMonth = 0;
+
   updateLoader(bool value) {
     isLoading = value;
     notifyListeners();
   }
 
-  addInConnectionsList(ConnectionModel newC) {
+  updateTotalEarningOfLocation(int value) {
+    totalEarningOfLocationInMonth = value;
+    notifyListeners();
+  }
+
+  updateLocationActiveConnections(int? value) {
+    locationActiveConnections = value;
+    notifyListeners();
+  }
+
+  updateLocationPendingConnections(int? value) {
+    locationPendingConnections = value;
+    notifyListeners();
+  }
+
+  addInConnectionsList(LocationConnectionsWithPaymentModel newC) {
     connectionsList.add(newC);
     notifyListeners();
   }
 
-  addInPaidConnectionsList(ConnectionModel newC) {
+  addInPaidConnectionsList(LocationConnectionsWithPaymentModel newC) {
     paidConnectionsList.add(newC);
     notifyListeners();
   }
 
-  addInSearchConnectionsList(ConnectionModel newC) {
+  addInSearchConnectionsList(LocationConnectionsWithPaymentModel newC) {
     searchedConnectionsList.add(newC);
     notifyListeners();
   }
 
-  insertAtConnectionsList(ConnectionModel newC) {
+  insertAtConnectionsList(LocationConnectionsWithPaymentModel newC) {
     connectionsList.insert(0, newC);
     notifyListeners();
   }
@@ -73,7 +95,7 @@ class CityDetailProvider extends ChangeNotifier {
     }
   }
 
-  Future getAllConnections({required int? locationId}) async {
+  Future getAllConnectionsOfLocation({required int? locationId}) async {
     try {
       emptyConnectionList();
       updateLoader(true);
@@ -83,7 +105,8 @@ class CityDetailProvider extends ChangeNotifier {
           [];
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
-          addInConnectionsList(ConnectionModel.fromJson(maps[i]));
+          addInConnectionsList(
+              LocationConnectionsWithPaymentModel.fromJson(maps[i]));
         }
       }
       updateLoader(false);
@@ -102,7 +125,8 @@ class CityDetailProvider extends ChangeNotifier {
           [];
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
-          addInConnectionsList(ConnectionModel.fromJson(maps[i]));
+          addInConnectionsList(
+              LocationConnectionsWithPaymentModel.fromJson(maps[i]));
         }
       }
       updateLoader(false);
@@ -126,7 +150,7 @@ class CityDetailProvider extends ChangeNotifier {
             DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
         ..updatedAt =
             DateTime.parse(DateFormat(dateFormat).format(DateTime.now()));
-      int? id = await connectionsDb.addConnection(connection);
+      int? id = await connectionsDb.addConnection(connection: connection);
       if (id == 0) {
         showToast('Failed!');
         return false;
@@ -135,13 +159,35 @@ class CityDetailProvider extends ChangeNotifier {
         mobileFieldController.clear();
         locationTextFieldController.clear();
         nameController.clear();
-        getAllConnections(locationId: locationid);
+        getAllConnectionsOfLocation(locationId: locationid);
+        getLocationConnectionsStats(locationId: locationid!);
 
         return true;
       }
     } catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  Future getLocationConnectionsStats({required int locationId}) async {
+    try {
+      log(locationId.toString());
+      int? totalEarning = await billsDb.totalLocationEarningOfMonth(
+          month: currentMonth, year: currentYear, locationId: locationId);
+      log('total Earning of LocationID $locationId this month is = $totalEarning');
+      updateTotalEarningOfLocation(totalEarning!);
+      int? totalActive = await connectionsDb.countActiveConnectionsOfLocation(
+          locationId: locationId);
+      log('total location active connections $totalActive');
+      updateLocationActiveConnections(totalActive);
+      int? totalPaidConnections = await billsDb.totalPaidConnectionsOfLocation(
+          month: currentMonth, year: currentYear, locationId: locationId);
+      int? totalPending = totalActive! - totalPaidConnections!;
+      log('total pending location active connections $totalPending');
+      updateLocationPendingConnections(totalPending);
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

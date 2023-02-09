@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:b_networks/models/connection_model.dart';
+import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app components/KLongCustomCard.dart';
@@ -29,7 +32,9 @@ class CityDetailsScreenComponents {
     );
   }
 
-  Widget connectionsList({required List<ConnectionModel>? connectionsList}) {
+  Widget connectionsList(
+      {required List<LocationConnectionsWithPaymentModel>? connectionsList,
+      required Function()? onTap}) {
     return ListView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 15),
@@ -47,11 +52,14 @@ class CityDetailsScreenComponents {
                               userName: connectionsList[i].fullName!,
                               connectionId: connectionsList[i].id,
                               locationId: connectionsList[i].locationId,
-                            )));
+                            ))).then((value) => onTap!());
               },
               mainTitle: connectionsList[i].fullName!,
               description: connectionsList[i].address!,
-              billStatus: pending),
+              billStatus: connectionsList[i].paymentStatus == null ||
+                      connectionsList[i].paymentStatus == pending
+                  ? pending
+                  : paid),
         );
       },
     );

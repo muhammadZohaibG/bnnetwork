@@ -141,13 +141,18 @@ class _HomePageState extends State<HomePage> {
                                     ? HomeScreenComponents()
                                         .shimmerList(context)
                                     : homeProvider.locations!.isEmpty
-                                        ? Center(
-                                            child: Text('No Locations To Show',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: KColors().darkGrey,
-                                                    fontWeight:
-                                                        FontWeight.w500)))
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20.0),
+                                            child: Center(
+                                                child: Text(
+                                                    'No Locations To Show',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                            KColors().darkGrey,
+                                                        fontWeight:
+                                                            FontWeight.w400))))
                                         : ListView.builder(
                                             shrinkWrap: true,
                                             padding: const EdgeInsets.all(0),

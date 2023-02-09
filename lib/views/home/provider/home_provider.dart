@@ -105,7 +105,7 @@ class HomeProvider extends ChangeNotifier {
       int? totalActive = await connectionsDb.countActiveConnections();
       updateTotalActiveConnections(totalActive!);
       log('total active here $totalActiveConnections');
-      int? totalPaid = await billsDb.totalPaidConnections(
+      int? totalPaid = await billsDb.totalPaidConnectionsOfMonth(
           month: currentMonth, year: currentYear);
       int? totalUnpaid = totalActive - totalPaid!;
       updatePendingPaidConnections(totalUnpaid);
@@ -148,7 +148,7 @@ class HomeProvider extends ChangeNotifier {
 
   Future calculateTotalEarnings() async {
     try {
-      var result = await billsDb.totalBillAmountPaid(
+      var result = await billsDb.totalBillAmountPaidOfMonth(
           month: currentMonth, year: currentYear);
 
       updateTotalEarnings(result);
@@ -183,12 +183,13 @@ class HomeProvider extends ChangeNotifier {
         } else {
           newLocation.id = id;
           showToast('Added', backgroundColor: primaryColor);
-          locationNameController.clear;
+          locationNameController.clear();
           getLocations();
           return true;
         }
       } else {
         showToast('Location Already Exists');
+        locationNameController.clear();
         return false;
       }
     } catch (e) {

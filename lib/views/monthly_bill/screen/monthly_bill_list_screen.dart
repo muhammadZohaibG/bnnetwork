@@ -1,4 +1,5 @@
 import 'package:b_networks/app%20components/app_components.dart';
+import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
 import 'package:b_networks/views/monthly_bill/components/components.dart';
 import 'package:b_networks/views/monthly_bill/components/monthly_bill_top_bar.dart';
 import 'package:b_networks/app%20components/KMainButton.dart';
@@ -29,11 +30,8 @@ class MonthlyBillListScreen extends StatefulWidget {
 
 class _MonthlyBillListScreenState extends State<MonthlyBillListScreen> {
   KDialogBox kDialogBox = KDialogBox();
-  List<String> months = ["January", "February"];
+  CityDetailProvider? cityDetailProvider;
 
-  List<String> billAmount = ["2500", "7000"];
-
-  List<String> userPaidStatus = [paid, pending];
   String? month;
   String? payment;
 
@@ -48,6 +46,8 @@ class _MonthlyBillListScreenState extends State<MonthlyBillListScreen> {
   function() async {
     final monthlyBillProvider =
         Provider.of<MonthlyBillProvider>(context, listen: false);
+    cityDetailProvider =
+        Provider.of<CityDetailProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await monthlyBillProvider.getBills(connectionId: widget.connectionId);
     });
@@ -113,6 +113,10 @@ class _MonthlyBillListScreenState extends State<MonthlyBillListScreen> {
                                         if (res) {
                                           if (!mounted) return;
                                           Navigator.of(context).pop();
+                                          cityDetailProvider!
+                                              .getAllConnectionsOfLocation(
+                                                  locationId:
+                                                      widget.locationId);
                                         }
                                       }
                                     },
