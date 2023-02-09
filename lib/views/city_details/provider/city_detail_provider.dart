@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
+import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:b_networks/utils/KColors.dart';
@@ -25,6 +26,8 @@ class CityDetailProvider extends ChangeNotifier {
   TextEditingController searchConnectionController = TextEditingController();
   String currentMonth = DateFormat('MMMM').format(DateTime.now());
   String currentYear = DateFormat('y').format(DateTime.now());
+
+  String selectedList = all;
 
   int? locationActiveConnections = 0;
   int? locationPendingConnections = 0;
@@ -55,8 +58,18 @@ class CityDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  updateSelectedList(String value) {
+    selectedList = value;
+    notifyListeners();
+  }
+
   addInPaidConnectionsList(LocationConnectionsWithPaymentModel newC) {
     paidConnectionsList.add(newC);
+    notifyListeners();
+  }
+
+  addInPendingConnectionsList(LocationConnectionsWithPaymentModel newC) {
+    pendingConnectionsList.add(newC);
     notifyListeners();
   }
 
@@ -71,32 +84,60 @@ class CityDetailProvider extends ChangeNotifier {
   }
 
   emptyConnectionList() {
-    connectionsList = [];
+    connectionsList.clear();
     notifyListeners();
   }
 
   emptyPaidConnectionList() {
-    paidConnectionsList = [];
+    paidConnectionsList.clear();
+    notifyListeners();
+  }
+
+  emptyPendingConnectionList() {
+    pendingConnectionsList.clear();
     notifyListeners();
   }
 
   emptySearchConnectionList() {
-    searchedConnectionsList = [];
+    searchedConnectionsList.clear();
     notifyListeners();
   }
 
   searchConnection() {
     emptySearchConnectionList();
-    for (var e in connectionsList) {
-      if (e.fullName!.toLowerCase().startsWith(
-          searchConnectionController.value.text.trim().toLowerCase())) {
-        addInSearchConnectionsList(e);
+    if (selectedList == all) {
+      if (connectionsList.isNotEmpty) {
+        for (var e in connectionsList) {
+          if (e.fullName!.toLowerCase().startsWith(
+              searchConnectionController.value.text.trim().toLowerCase())) {
+            addInSearchConnectionsList(e);
+          }
+        }
+      }
+    } else if (selectedList == paid) {
+      if (paidConnectionsList.isNotEmpty) {
+        for (var e in paidConnectionsList) {
+          if (e.fullName!.toLowerCase().startsWith(
+              searchConnectionController.value.text.trim().toLowerCase())) {
+            addInSearchConnectionsList(e);
+          }
+        }
+      }
+    } else {
+      if (pendingConnectionsList.isNotEmpty) {
+        for (var e in pendingConnectionsList) {
+          if (e.fullName!.toLowerCase().startsWith(
+              searchConnectionController.value.text.trim().toLowerCase())) {
+            addInSearchConnectionsList(e);
+          }
+        }
       }
     }
   }
 
   Future getAllConnectionsOfLocation({required int? locationId}) async {
     try {
+      updateSelectedList(all);
       emptyConnectionList();
       updateLoader(true);
       await Future.delayed(const Duration(seconds: 1));
@@ -112,21 +153,49 @@ class CityDetailProvider extends ChangeNotifier {
       updateLoader(false);
     } catch (e) {
       log(e.toString());
+      updateLoader(false);
     }
   }
 
-  Future getPaidConnections({required int? locationId}) async {
+  Future getPaidConnections() async {
     try {
+      updateSelectedList(paid);
       emptyPaidConnectionList();
-      updateLoader(true);
-      await Future.delayed(const Duration(seconds: 1));
-      List<Map<String, dynamic>> maps = await connectionsDb.getConnections(
-              locationId: locationId, month: currentMonth, year: currentYear) ??
-          [];
-      if (maps.isNotEmpty) {
-        for (int i = 0; i < maps.length; i++) {
-          addInConnectionsList(
-              LocationConnectionsWithPaymentModel.fromJson(maps[i]));
+
+      // updateLoader(true);
+      // await Future.delayed(const Duration(seconds: 1));
+      // List<Map<String, dynamic>> maps =
+      //     await connectionsDb.getPaidConnectionsOfLocation(
+      //             locationId: locationId,
+      //             month: currentMonth,
+      //             year: currentYear) ??
+      //         [];
+      if (connectionsList.isNotEmpty) {
+        for (int i = 0; i < connectionsList.length; i++) {
+          log(connectionsList[i].fullName!.toString());
+          if (connectionsList[i].paymentStatus.toString() == paid) {
+            addInPaidConnectionsList(connectionsList[i]);
+          }
+        }
+      }
+      updateLoader(false);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future getPendingConnections() async {
+    try {
+      updateSelectedList(pending);
+      emptyPendingConnectionList();
+
+      if (connectionsList.isNotEmpty) {
+        for (int i = 0; i < connectionsList.length; i++) {
+          log(connectionsList[i].fullName!.toString());
+          if (connectionsList[i].paymentStatus.toString() == 'null' ||
+              connectionsList[i].paymentStatus == pending) {
+            addInPendingConnectionsList(connectionsList[i]);
+          }
         }
       }
       updateLoader(false);
@@ -161,7 +230,24 @@ class CityDetailProvider extends ChangeNotifier {
         nameController.clear();
         getAllConnectionsOfLocation(locationId: locationid);
         getLocationConnectionsStats(locationId: locationid!);
+        // add this new connection's current month pending bill
 
+        BillModel bill = BillModel()
+          ..locationId = locationid
+          ..connectionId = id!
+          ..amount = 300
+          ..month = currentMonth
+          ..year = currentYear
+          ..createdAt =
+              DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
+          ..updatedAt =
+              DateTime.parse(DateFormat(dateFormat).format(DateTime.now()));
+        int? billId = await billsDb.addBill(bill: bill);
+        if (billId == 0) {
+          log('bill failed to add');
+        } else {
+          log('bill added successfully');
+        }
         return true;
       }
     } catch (e) {

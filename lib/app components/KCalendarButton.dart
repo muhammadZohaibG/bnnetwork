@@ -25,7 +25,7 @@ class KCalendarButton extends StatelessWidget {
           " $currentMonth $currentYear ",
           maxLines: 1,
           style: TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               color: kColors.buttonTextWhite,
               fontWeight: FontWeight.w700),
         ),

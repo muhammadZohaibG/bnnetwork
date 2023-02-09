@@ -48,33 +48,39 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: KColors().darkGrey)),
                   const SizedBox(height: 17),
                   Consumer<LoginProvider>(
-                      builder: (context, loginProvider, child) =>
-                          loginProvider.isLoading
-                              ? CircularProgressIndicator(color: primaryColor)
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    LoginScreenComponents()
-                                        .socialButton(context, onTap: () async {
-                                      bool? res =
-                                          await loginProvider.loginWithGoogle();
-                                      log(res.toString());
-                                      if (res!) {
-                                        if (!mounted) return;
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const HomePage()));
-                                      } else {}
-                                    }),
-                                    // KMainButton(
-                                    //     text: 'Continue as Guest',
-                                    //     onPressed: () async {
-                                    //       loginProvider.signOut();
-                                    //     }),
-                                  ],
-                                )),
+                      builder: (context, loginProvider, child) => loginProvider
+                              .isLoading
+                          ? CircularProgressIndicator(color: primaryColor)
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                LoginScreenComponents().socialButton(context,
+                                    onTap: () async {
+                                  bool? checkInternet =
+                                      await isNetworkAvailable();
+                                  if (checkInternet) {
+                                    bool? res =
+                                        await loginProvider.loginWithGoogle();
+                                    log(res.toString());
+                                    if (res!) {
+                                      if (!mounted) return;
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomePage()));
+                                    } else {}
+                                  } else {
+                                    showToast(noInternetConnection);
+                                  }
+                                }),
+                                // KMainButton(
+                                //     text: 'Continue as Guest',
+                                //     onPressed: () async {
+                                //       loginProvider.signOut();
+                                //     }),
+                              ],
+                            )),
                   const SizedBox(height: 17),
                   const Text('Please read our Terms & Conditions',
                       style: TextStyle(

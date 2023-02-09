@@ -25,16 +25,29 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       String? spEmail = await getValueInSharedPref(Keys.email);
       String? spName = await getValueInSharedPref(Keys.name);
+      String? spToken = await getValueInSharedPref(Keys.token);
+
       log('sp credentials name = $spName, email = $spEmail');
-      if (spEmail == null || spEmail == '' || spName == null || spName == '') {
+      if (spEmail == null ||
+          spEmail == '' ||
+          spName == null ||
+          spName == '' ||
+          spToken == null ||
+          spToken == '') {
         if (!mounted) return;
         Navigator.pushReplacement(
             context,
             MaterialPageRoute<void>(
                 builder: (BuildContext context) => const LoginScreen()));
       } else {
-        log('log email and name in sp');
+        log(' name in sp = $spName, email = $spEmail');
         if (!mounted) return;
+
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute<void>(
+        //         builder: (BuildContext context) => const HomePage()),
+        //     (route) => false);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute<void>(

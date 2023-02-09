@@ -9,6 +9,8 @@ const paid = "Paid";
 
 const String dateFormat = 'yyyy-MM-dd HH:mm:ss';
 
+const String noInternetConnection = 'Check Your Internet Connection';
+
 showToast(String? data, {Color? backgroundColor = Colors.red}) {
   Fluttertoast.showToast(
       msg: data!, // "This is Center Short Toast",

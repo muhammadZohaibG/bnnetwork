@@ -117,45 +117,40 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CityDetailsFilter(
-                          isSelected: allSelected,
-                          text: "All",
+                          isSelected: cityDetailProvider.selectedList == all
+                              ? true
+                              : false,
+                          text: all,
                           onTap: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            if (allSelected != true) {
-                              allSelected = true;
-                              paidSelected = false;
-                              pendingSelected = false;
-                              filter = "";
-                            }
-                            setState(() {});
+                            cityDetailProvider.searchConnectionController
+                                .clear();
+                            cityDetailProvider.getAllConnectionsOfLocation(
+                                locationId: widget.locationId!);
                           },
                         ),
                         CityDetailsFilter(
-                          isSelected: paidSelected,
-                          text: "Paid",
+                          isSelected: cityDetailProvider.selectedList == paid
+                              ? true
+                              : false,
+                          text: paid,
                           onTap: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            if (paidSelected != true) {
-                              allSelected = false;
-                              paidSelected = true;
-                              pendingSelected = false;
-                              filter = "paid";
-                            }
-                            setState(() {});
+                            cityDetailProvider.searchConnectionController
+                                .clear();
+                            cityDetailProvider.getPaidConnections();
                           },
                         ),
                         CityDetailsFilter(
-                          isSelected: pendingSelected,
-                          text: "Pending",
+                          isSelected: cityDetailProvider.selectedList == pending
+                              ? true
+                              : false,
+                          text: pending,
                           onTap: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            if (pendingSelected != true) {
-                              allSelected = false;
-                              paidSelected = false;
-                              pendingSelected = true;
-                              filter = "pending";
-                            }
-                            setState(() {});
+                            cityDetailProvider.searchConnectionController
+                                .clear();
+                            cityDetailProvider.getPendingConnections();
                           },
                         ),
                       ],
@@ -171,25 +166,39 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                         : cityDetailProvider.connectionsList.isEmpty
                             ? CityDetailsScreenComponents()
                                 .noConnectionsToShow()
-                            : cityDetailProvider.searchConnectionController.value
-                                    .text.isEmpty
-                                ? //show searched connections
+                            : cityDetailProvider.searchConnectionController
+                                    .value.text.isEmpty
+                                ? //show all connections
                                 CityDetailsScreenComponents().connectionsList(
-                                    connectionsList:
-                                        cityDetailProvider.connectionsList,
-                                    onTap: () => cityDetailProvider
-                                        .getLocationConnectionsStats(
-                                            locationId: widget.locationId!))
-                                : cityDetailProvider
+                                    connectionsList: cityDetailProvider
+                                                .selectedList ==
+                                            all
+                                        ? cityDetailProvider.connectionsList
+                                        : cityDetailProvider
+                                                    .selectedList ==
+                                                paid
+                                            ? cityDetailProvider
+                                                .paidConnectionsList
+                                            : cityDetailProvider
+                                                .pendingConnectionsList,
+                                    onTap:
+                                        () =>
+                                            cityDetailProvider
+                                                .getLocationConnectionsStats(
+                                                    locationId: widget
+                                                        .locationId!))
+                                : //show searched connections
+                                cityDetailProvider
                                         .searchedConnectionsList.isEmpty
-                                    ? //if no connections over all witout search
+                                    ? //if no connections by search
                                     CityDetailsScreenComponents()
                                         .noConnectionsToShow()
-                                    : //show overall connections
+                                    : //show search connections
                                     CityDetailsScreenComponents()
                                         .connectionsList(
-                                            connectionsList: cityDetailProvider
-                                                .searchedConnectionsList,
+                                            connectionsList:
+                                                cityDetailProvider
+                                                    .searchedConnectionsList,
                                             onTap: () => cityDetailProvider
                                                 .getLocationConnectionsStats(
                                                     locationId:
@@ -203,7 +212,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
               text: "Add New User",
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                // cityDetailProvider.getAllConnectionsOfLocation(
+                // cityDetailProvider.getPaidConnections(
                 //     locationId: widget.locationId);
                 showAddUserDialog();
               }),

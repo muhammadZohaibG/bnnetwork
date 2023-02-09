@@ -42,7 +42,7 @@ class KStatsCards extends StatelessWidget {
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          "Total Earning",
+                          "Total Fees",
                           style: TextStyle(
                               fontSize: 12,
                               color: kColors.statsUnderText,

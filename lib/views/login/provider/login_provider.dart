@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:b_networks/api_requests/auth_request.dart';
 import 'package:b_networks/utils/keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,20 +41,38 @@ class LoginProvider extends ChangeNotifier {
       log("id========>>>>>>${googleUser.id}");
       log("email==========>>>>>>$email");
       log("name==========>>>>>>$name");
-      log("token==========>>>>>>${googleAuth.idToken}");
-      log("image==========>>>>>>$imageurl");
-      await storeInSharedPref(Keys.email, email.toString());
+      // log("googleAuth.idToken==========>>>>>>${googleAuth.idToken}");
+      // log("image==========>>>>>>$imageurl");
+      /*  await storeInSharedPref(Keys.email, email.toString());
       await storeInSharedPref(Keys.name, name.toString());
       await storeInSharedPref(Keys.image, imageurl.toString());
-      await storeInSharedPref(Keys.token, googleAuth.idToken.toString());
+      await storeInSharedPref(Keys.token, googleAuth.idToken.toString());*/
+      updateLoading(true);
       if (name.isNotEmpty || email.isNotEmpty) {
         log('name and email not empty ');
-        return true;
+        // call login api
+        Map<String, dynamic> user = await authLogin(email: email, name: name);
+        log(user.toString());
+        if (user['status'] != null && user['status'] == 200) {
+          log(user['message']);
+          await storeInSharedPref(Keys.email, email.toString());
+          await storeInSharedPref(Keys.name, name.toString());
+          await storeInSharedPref(Keys.image, user['data']['profile_picture']);
+          await storeInSharedPref(Keys.token, user['data']['token']);
+          updateLoading(false);
+          return true;
+        } else {
+          showToast('Login Failed!');
+          updateLoading(false);
+          return false;
+        }
       } else {
-        log('name and email empty ');
+        updateLoading(false);
+        log('name and email empty after gooogle sign in');
         return false;
       }
     } catch (e) {
+      updateLoading(false);
       log(e.toString());
       return false;
     }
@@ -62,7 +81,7 @@ class LoginProvider extends ChangeNotifier {
   Future signOut() async {
     try {
       await GoogleSignIn().signOut();
-      await firebaseAuth.signOut();
+      // await firebaseAuth.signOut();
       await clearInSharedPref(Keys.email);
       await clearInSharedPref(Keys.name);
       await clearInSharedPref(Keys.image);

@@ -1,3 +1,4 @@
+import 'package:b_networks/views/settings/provider/settings_provider.dart';
 import 'package:b_networks/views/splash_screen.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
@@ -16,7 +17,10 @@ void main() async {
       statusBarIconBrightness: Brightness.dark));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
 }
 
 /*
@@ -42,7 +46,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => MonthlyBillProvider(), lazy: false),
         ChangeNotifierProvider(
-            create: (context) => LoginProvider(), lazy: false)
+            create: (context) => LoginProvider(), lazy: false),
+        ChangeNotifierProvider(
+            create: (context) => SettingsProvider(), lazy: false)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

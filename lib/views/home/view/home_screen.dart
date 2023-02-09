@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                                     getOverallStats();
                                   },
                                   child: Text(
-                                    "Service Locations",
+                                    "Service Area",
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: KColors().darkGrey,

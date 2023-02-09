@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/models/connection_model.dart';
+import 'package:b_networks/utils/const.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'b_network_db.dart';
@@ -27,33 +28,56 @@ class Connections {
     var dbClient = await DBHelper().db;
     // var tempTable = await dbClient!.rawQuery(''' Select  ''');
 
-    var table = await dbClient!.rawQuery(
+    /* var table = await dbClient!.rawQuery(
         '''select $ID,  $FULLNAME, $LOCATIONID, $ADDRESS, $ISACTIVE, $MOBILE, $CREATEDAT, $UPDATEDAT
          from $TABLE where $ISACTIVE == 1 and $LOCATIONID = $locationId  ORDER BY ($CREATEDAT) DESC''');
 
     //By Inner join
-    // var testTable = await dbClient.rawQuery(
-    //     '''Select $TABLE.$ID, $TABLE.$FULLNAME, $TABLE.$LOCATIONID, $TABLE.$ADDRESS,
-    //     $TABLE.$ISACTIVE, $TABLE.$MOBILE, $TABLE.$CREATEDAT, $TABLE.$UPDATEDAT,
-    //     ${Bills.TABLE}.${Bills.STATUS} as payment_status from $TABLE
-    //     INNER JOIN ${Bills.TABLE} ON ${Bills.TABLE}.${Bills.CONNECTIONID} = $TABLE.$ID
-    //     and ${Bills.TABLE}.${Bills.LOCATIONID} = $TABLE.$LOCATIONID
-    //     and ${Bills.TABLE}.${Bills.MONTH} = "$month" and ${Bills.TABLE}.${Bills.YEAR} = "$year"
-    //     where $TABLE.$ISACTIVE = 1 and $TABLE.$LOCATIONID = $locationId ORDER BY ($TABLE.$CREATEDAT) DESC''');
-
-    //By Left Join
     var testTable = await dbClient.rawQuery(
+        '''Select $TABLE.$ID, $TABLE.$FULLNAME, $TABLE.$LOCATIONID, $TABLE.$ADDRESS,
+        $TABLE.$ISACTIVE, $TABLE.$MOBILE, $TABLE.$CREATEDAT, $TABLE.$UPDATEDAT,
+        ${Bills.TABLE}.${Bills.STATUS} as payment_status from $TABLE
+        INNER JOIN ${Bills.TABLE} ON ${Bills.TABLE}.${Bills.CONNECTIONID} = $TABLE.$ID
+        and ${Bills.TABLE}.${Bills.LOCATIONID} = $TABLE.$LOCATIONID
+        and ${Bills.TABLE}.${Bills.MONTH} = "$month" and ${Bills.TABLE}.${Bills.YEAR} = "$year"
+        where $TABLE.$ISACTIVE = 1 and $TABLE.$LOCATIONID = $locationId ORDER BY ($TABLE.$CREATEDAT) DESC''');
+    */
+    //By Left Join
+    var testTable = await dbClient!.rawQuery(
         '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$ADDRESS, b.${Bills.STATUS} as payment_status
         from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.CONNECTIONID} == c.$ID 
         and b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
         where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId ORDER BY (c.$CREATEDAT) DESC
         ''');
-    if (table.isEmpty) {
+    if (testTable.isEmpty) {
       log('Connection Not Found');
     }
     log('test table result ======>>>>>>>${testTable.toList()}');
 
     return testTable;
+  }
+
+  Future getPaidConnectionsOfLocation(
+      {required int? locationId,
+      required String? month,
+      required String? year}) async {
+    try {
+      var dbClient = await DBHelper().db;
+      var table = await dbClient!.rawQuery(
+          '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$ADDRESS, b.${Bills.STATUS} as payment_status
+        from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.STATUS} != "$paid" 
+        and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
+        where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId ORDER BY (c.$CREATEDAT) DESC
+        ''');
+      if (table.isEmpty) {
+        log('Connection Not Found');
+      }
+      log('table result ======>>>>>>>${table.toList()}');
+
+      return table;
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Future addConnection({required ConnectionModel connection}) async {

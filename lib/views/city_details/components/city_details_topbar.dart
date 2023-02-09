@@ -20,9 +20,7 @@ class CityDetailsTopBar extends StatelessWidget {
             logoRadius: 45,
             logoFontSize: 16,
           ),
-          const SizedBox(
-            width: 7,
-          ),
+          const SizedBox(width: 7),
           Text(
             cityName,
             style: TextStyle(

@@ -28,7 +28,7 @@ class KCityLongCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 4,
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -57,7 +57,7 @@ class KCityLongCard extends StatelessWidget {
                         fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    "Active Users",
+                    "Connections",
                     style: TextStyle(
                         fontSize: 12,
                         color: kColors.statsUnderText,
