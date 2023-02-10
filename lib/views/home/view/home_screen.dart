@@ -145,8 +145,7 @@ class _HomePageState extends State<HomePage> {
                                             padding: const EdgeInsets.only(
                                                 top: 20.0),
                                             child: Center(
-                                                child: Text(
-                                                    'No Locations To Show',
+                                                child: Text('No Areas To Show',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         color:
@@ -221,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Enter location name to add",
+                                Text("Enter Area name to add",
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: KColors().statsUnderText,
@@ -239,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                                       }
                                       return null;
                                     },
-                                    hintText: "Location Name")
+                                    hintText: "Area Name")
                               ],
                             ),
                           ),

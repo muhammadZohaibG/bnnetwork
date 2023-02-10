@@ -77,7 +77,6 @@ class HomeProvider extends ChangeNotifier {
   addValueInTotalExpenseController(int? v) {
     totalExpenseStreamController.sink.add(v);
     notifyListeners();
-    // yield * totalExpenseStreamController;
   }
 
   updatePendingPaidConnections(int value) {

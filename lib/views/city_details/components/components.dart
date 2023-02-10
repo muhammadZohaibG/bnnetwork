@@ -18,7 +18,7 @@ class CityDetailsScreenComponents {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Total Earnings:',
+            'Total Fees:',
             style: TextStyle(
                 fontSize: 16, color: kdarkGrey, fontWeight: FontWeight.w600),
           ),
