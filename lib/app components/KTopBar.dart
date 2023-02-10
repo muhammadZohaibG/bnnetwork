@@ -6,6 +6,7 @@ import '../utils/KColors.dart';
 
 class KTopBar extends StatelessWidget {
   int leftFlex;
+  int middleFlex;
   Widget? leftWidget;
   Widget? midWidget;
   Widget? rightWidget;
@@ -16,6 +17,7 @@ class KTopBar extends StatelessWidget {
       {super.key,
       this.leftWidget,
       this.leftFlex = 0,
+      this.middleFlex = 0,
       this.midWidget,
       this.rightWidget,
       this.backArrow = false,
@@ -74,10 +76,11 @@ class KTopBar extends StatelessWidget {
                       child: leftWidget ?? Container(),
                     )),
           Expanded(
+              flex: middleFlex,
               child: Align(
-            alignment: Alignment.center,
-            child: midWidget ?? Container(),
-          )),
+                alignment: Alignment.center,
+                child: midWidget ?? Container(),
+              )),
           Expanded(
               child: Align(
             alignment: Alignment.centerRight,

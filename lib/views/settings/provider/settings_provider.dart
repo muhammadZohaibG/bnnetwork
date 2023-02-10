@@ -8,10 +8,35 @@ import '../../../utils/keys.dart';
 
 class SettingsProvider extends ChangeNotifier {
   bool isLoading = false;
+  String? email = '';
+  String? profileImage;
+  String? name = '';
+  bool? notificationsSwitch = false;
 
   updateLoading(bool value) {
     isLoading = value;
     notifyListeners();
+  }
+
+  updateNotificationSwitch(bool? value) {
+    notificationsSwitch = value;
+    notifyListeners();
+  }
+
+  Future userDetails() async {
+    try {
+      updateLoading(true);
+      email = await getValueInSharedPref(Keys.email);
+      profileImage = await getValueInSharedPref(Keys.image);
+      log(profileImage!);
+
+      name = await getValueInSharedPref(Keys.name);
+      notifyListeners();
+      updateLoading(false);
+    } catch (e) {
+      log(e.toString());
+      updateLoading(false);
+    }
   }
 
   Future logOut() async {

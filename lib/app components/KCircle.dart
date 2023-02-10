@@ -6,16 +6,22 @@ import '../utils/KColors.dart';
 class KCircle extends StatelessWidget {
   Widget centerWidget;
   double logoRadius;
-  KCircle({super.key, required this.logoRadius, required this.centerWidget});
+  Function()? onTap;
+  KCircle(
+      {super.key,
+      required this.logoRadius,
+      required this.centerWidget,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     KColors kColors = KColors();
     return InkWell(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AppInfoPage()));
-      },
+      onTap: onTap ??
+          () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AppInfoPage()));
+          },
       child: Container(
         height: logoRadius,
         width: logoRadius,

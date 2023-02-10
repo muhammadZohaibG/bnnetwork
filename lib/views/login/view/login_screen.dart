@@ -24,77 +24,71 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: KColors().screenBG,
       body: SizedBox(
         height: height(context),
-        child: SingleChildScrollView(
-          child: Column(children: [
-            const Padding(
-                padding: EdgeInsets.only(bottom: 10), child: LoginTopBar()),
-            Padding(
+        child: Column(children: [
+          const Padding(
+              padding: EdgeInsets.only(bottom: 10), child: LoginTopBar()),
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  Image.asset("assets/images/app_info.png"),
-                  Text('Simplified the way of connections',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                          color: KColors().darkGrey)),
-                  const SizedBox(height: 17),
-                  Text(
-                      '''Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                      Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                      when an unknown printer took a galley of type and scrambled it to make a type specimen book.''',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          color: KColors().darkGrey)),
-                  const SizedBox(height: 17),
-                  Consumer<LoginProvider>(
-                      builder: (context, loginProvider, child) => loginProvider
-                              .isLoading
-                          ? CircularProgressIndicator(color: primaryColor)
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                LoginScreenComponents().socialButton(context,
-                                    onTap: () async {
-                                  bool? checkInternet =
-                                      await isNetworkAvailable();
-                                  if (checkInternet) {
-                                    bool? res =
-                                        await loginProvider.loginWithGoogle();
-                                    log(res.toString());
-                                    if (res!) {
-                                      if (!mounted) return;
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomePage()));
-                                    } else {}
-                                  } else {
-                                    showToast(noInternetConnection);
-                                  }
-                                }),
-                                // KMainButton(
-                                //     text: 'Continue as Guest',
-                                //     onPressed: () async {
-                                //       loginProvider.signOut();
-                                //     }),
-                              ],
-                            )),
-                  const SizedBox(height: 17),
-                  const Text('Please read our Terms & Conditions',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Color(0xff573353))),
-                  const SizedBox(height: 30),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Image.asset("assets/images/app_info.png"),
+                    Text('Simplified the way of connections',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 20,
+                            color: KColors().darkGrey)),
+                    const SizedBox(height: 17),
+                    Text(
+                        '''Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.''',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            color: KColors().darkGrey)),
+                    const SizedBox(height: 17),
+                    Consumer<LoginProvider>(
+                        builder: (context, loginProvider, child) =>
+                            loginProvider.isLoading
+                                ? CircularProgressIndicator(color: primaryColor)
+                                : Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      LoginScreenComponents().socialButton(
+                                          context, onTap: () async {
+                                        bool? checkInternet =
+                                            await isNetworkAvailable();
+                                        if (checkInternet) {
+                                          bool? res = await loginProvider
+                                              .loginWithGoogle();
+                                          log(res.toString());
+                                          if (res!) {
+                                            if (!mounted) return;
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const HomePage()));
+                                          } else {}
+                                        } else {
+                                          showToast(noInternetConnection);
+                                        }
+                                      }),
+                                    ],
+                                  )),
+                  ],
+                ),
               ),
-            )
-          ]),
-        ),
+            ),
+          ),
+          const Text('Please read our Terms & Conditions',
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Color(0xff573353))),
+          const SizedBox(height: 30),
+        ]),
       ),
     );
   }

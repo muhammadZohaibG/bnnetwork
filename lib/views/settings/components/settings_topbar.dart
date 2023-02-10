@@ -1,4 +1,5 @@
 import 'package:b_networks/app%20components/KTopBar.dart';
+import 'package:b_networks/views/settings/view/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app components/KCircle.dart';
@@ -26,7 +27,14 @@ class SettingsTopBar extends StatelessWidget {
           centerWidget: Image.asset(
             "assets/icons/pen.png",
             scale: 1.1,
-          )),
+          ),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UpdateProfileScreen(),
+                ));
+          }),
     );
   }
 }
