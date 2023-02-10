@@ -22,19 +22,19 @@ class SettingsTopBar extends StatelessWidget {
           color: Color(0xff573353),
         ),
       ),
-      rightWidget: KCircle(
-          logoRadius: 30,
-          centerWidget: Image.asset(
-            "assets/icons/pen.png",
-            scale: 1.1,
-          ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UpdateProfileScreen(),
-                ));
-          }),
+      // rightWidget: KCircle(
+      //     logoRadius: 30,
+      //     centerWidget: Image.asset(
+      //       "assets/icons/pen.png",
+      //       scale: 1.1,
+      //     ),
+      //     onTap: () {
+      //       Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => const UpdateProfileScreen(),
+      //           ));
+      //     }),
     );
   }
 }

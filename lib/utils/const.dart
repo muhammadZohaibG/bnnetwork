@@ -1,11 +1,15 @@
+import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as custom_tabs;
 
 const all = "All";
 const pending = "Pending";
 const paid = "Paid";
+
+const termsAndConditionsUrl = 'http://elabdisb.com/privacy-policy.html';
 
 const String dateFormat = 'yyyy-MM-dd HH:mm:ss';
 
@@ -30,6 +34,20 @@ Future<bool> isNetworkAvailable() async {
     return true;
   }
   return false;
+}
+
+void launchUrlCustomTab(String? url) {
+  if (url!.isNotEmpty) {
+    custom_tabs.launch(
+      url,
+      customTabsOption: custom_tabs.CustomTabsOption(
+          enableDefaultShare: true,
+          enableInstantApps: true,
+          enableUrlBarHiding: true,
+          showPageTitle: true,
+          toolbarColor: primaryColor),
+    );
+  }
 }
 
 double width(BuildContext context) {

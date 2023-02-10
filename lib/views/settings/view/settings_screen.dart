@@ -90,7 +90,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         leadingIcon: 'assets/icons/terms.png',
                         title: 'Need Help',
                         subTitle: 'Terms and Conditions',
-                        tileOnTap: () {}),
+                        tileOnTap: () {
+                          launchUrlCustomTab(termsAndConditionsUrl);
+                        }),
                     const SizedBox(height: 10),
                     SettingsScreenComponents().tile(
                         leadingIcon: 'assets/icons/logout.png',

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:b_networks/app%20components/app_components.dart';
 import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
 import 'package:b_networks/views/monthly_bill/components/components.dart';
@@ -210,31 +212,44 @@ class _MonthlyBillListScreenState extends State<MonthlyBillListScreen> {
                                           },
                                         ),
                                         KMainButton(
-                                          color: kColors.decline,
-                                          forDialog: true,
-                                          text: "Disconnect",
-                                          onPressed: () {},
-                                        ),
+                                            color: kColors.decline,
+                                            forDialog: true,
+                                            text: "Disconnect",
+                                            onPressed: () async {
+                                              bool? res =
+                                                  await monthlyBillProvider
+                                                      .disconnectConnection(
+                                                          connectionId: widget
+                                                              .connectionId);
+                                              if (res!) {
+                                                log('true here');
+
+                                                if (!mounted) return;
+
+                                                cityDetailProvider!
+                                                    .removeConnectionFromList(
+                                                        widget.connectionId);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              } else {
+                                                log('false here');
+                                              }
+                                            })
                                       ],
                                       context: context,
                                       widgets: <Widget>[
+                                        Text("Disconnect user",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: kColors.statsUnderText,
+                                                fontWeight: FontWeight.w500)),
+                                        const SizedBox(height: 20),
                                         Text(
-                                          "Disconect user",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: kColors.statsUnderText,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Text(
-                                          "Are you sure you want to disconnect this user?",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: kColors.statsUnderText,
-                                              fontWeight: FontWeight.w400),
-                                        ),
+                                            "Are you sure you want to disconnect this user?",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: kColors.statsUnderText,
+                                                fontWeight: FontWeight.w400)),
                                       ]);
                                 }))
                       ]))

@@ -281,7 +281,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                   onChanged: (value) {
                     newAddress = value;
                   },
-                  hintText: "Address",
+                  hintText: "House No.",
                 ),
                 const SizedBox(height: 20),
                 KTextField(

@@ -116,4 +116,19 @@ class Connections {
     log('total active location connections: $total');
     return total;
   }
+
+  Future disconnectConnection(
+      {required int connectionId, required String updatedAt}) async {
+    var dbClient = await DBHelper().db;
+
+    int? isUpdate = await dbClient!.rawUpdate(
+        'Update $TABLE SET $ISACTIVE = ?, $UPDATEDAT = ? WHERE $ID = ? ',
+        [0, updatedAt, connectionId]);
+    log(isUpdate.toString());
+
+    var updatedConnection = await dbClient
+        .rawQuery('Select * from $TABLE where $ID = "$connectionId"');
+    log(updatedConnection.toString());
+    return isUpdate;
+  }
 }

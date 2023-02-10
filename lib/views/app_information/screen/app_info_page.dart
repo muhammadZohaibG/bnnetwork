@@ -1,7 +1,9 @@
 import 'package:b_networks/views/app_information/components/app_info_topbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/KColors.dart';
+import '../../../utils/const.dart';
 
 class AppInfoPage extends StatefulWidget {
   const AppInfoPage({super.key});
@@ -50,14 +52,27 @@ class _AppInfoPageState extends State<AppInfoPage> {
                     ),
                   ),
                   const Spacer(),
-                  const Text(
-                    'Please read our Terms & Conditions',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Color(0xff573353),
-                    ),
-                  ),
+                  RichText(
+                      text: TextSpan(
+                    text: 'Please read our ',
+                    children: [
+                      TextSpan(
+                          text: 'Terms & Conditions',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: primaryColor),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrlCustomTab(termsAndConditionsUrl);
+                            }),
+                    ],
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Color(0xff573353)),
+                  )),
                   const SizedBox(
                     height: 30,
                   ),

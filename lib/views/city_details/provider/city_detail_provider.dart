@@ -103,6 +103,11 @@ class CityDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  removeConnectionFromList(int? connectionId) {
+    connectionsList.removeWhere((element) => element.id == connectionId);
+    notifyListeners();
+  }
+
   searchConnection() {
     emptySearchConnectionList();
     if (selectedList == all) {

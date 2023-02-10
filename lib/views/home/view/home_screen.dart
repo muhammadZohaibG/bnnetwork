@@ -70,6 +70,7 @@ class _HomePageState extends State<HomePage> {
 
       await homeProvider.calculateTotalEarnings();
       await homeProvider.getConnectionsStats();
+      homeProvider.getLocations();
     });
   }
 

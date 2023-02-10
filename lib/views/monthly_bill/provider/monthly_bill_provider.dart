@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/bills.dart';
+import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import '../../../utils/const.dart';
 class MonthlyBillProvider extends ChangeNotifier {
   bool isLoading = false;
   var billsDb = Bills();
+  var connectionsDb = Connections();
   TextEditingController amountController = TextEditingController();
   String currentMonth = DateFormat('MMMM').format(DateTime.now());
   String currentYear = DateFormat('y').format(DateTime.now());
@@ -101,6 +103,25 @@ class MonthlyBillProvider extends ChangeNotifier {
           amountController.clear();
           return true;
         }
+      }
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool?> disconnectConnection({required int? connectionId}) async {
+    try {
+      int? isUpdate = await connectionsDb.disconnectConnection(
+          connectionId: connectionId!,
+          updatedAt:
+              DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
+                  .toString());
+      log('isUpdate value is $isUpdate');
+      if (isUpdate == 1) {
+        return true;
+      } else {
+        return false;
       }
     } catch (e) {
       log(e.toString());

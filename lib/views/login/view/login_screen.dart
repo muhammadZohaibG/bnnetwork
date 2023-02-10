@@ -7,6 +7,7 @@ import 'package:b_networks/views/home/view/home_screen.dart';
 import 'package:b_networks/views/login/components/app_info_topbar.dart';
 import 'package:b_networks/views/login/components/components.dart';
 import 'package:b_networks/views/login/provider/login_provider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                             color: KColors().darkGrey)),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 50),
                     Consumer<LoginProvider>(
                         builder: (context, loginProvider, child) =>
                             loginProvider.isLoading
@@ -82,11 +83,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          const Text('Please read our Terms & Conditions',
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  color: Color(0xff573353))),
+          RichText(
+              text: TextSpan(
+            text: 'Please read our ',
+            children: [
+              TextSpan(
+                  text: 'Terms & Conditions',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: primaryColor),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchUrlCustomTab(termsAndConditionsUrl);
+                    }),
+            ],
+            style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                color: Color(0xff573353)),
+          )),
+          // const Text('Please read our Terms & Conditions',
+          //     style: TextStyle(
+          //         fontWeight: FontWeight.w400,
+          //         fontSize: 14,
+          //         color: Color(0xff573353))),
           const SizedBox(height: 30),
         ]),
       ),

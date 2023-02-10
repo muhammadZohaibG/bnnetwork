@@ -60,7 +60,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 20),
                   KTextField(
                       onChanged: (c) {},
-                      hintText: 'Location',
+                      hintText: 'Address',
                       color: Colors.white),
                   const SizedBox(height: 20),
                 ],
