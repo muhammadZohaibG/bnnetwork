@@ -17,14 +17,18 @@ class LocationConnectionsWithPaymentModel {
     required this.id,
     required this.fullName,
     required this.locationId,
-    required this.address,
+    required this.homeAddress,
+    required this.streetAddress,
+    required this.mobile,
     required this.paymentStatus,
   });
 
   int? id;
   String? fullName;
   int? locationId;
-  String? address;
+  String? homeAddress;
+  String? streetAddress;
+  String? mobile;
   String? paymentStatus;
 
   factory LocationConnectionsWithPaymentModel.fromJson(
@@ -33,7 +37,9 @@ class LocationConnectionsWithPaymentModel {
         id: json["id"],
         fullName: json["full_name"],
         locationId: json["location_id"],
-        address: json["address"],
+        homeAddress: json["home_address"],
+        streetAddress: json["street_address"],
+        mobile: json["mobile"],
         paymentStatus: json["payment_status"],
       );
 
@@ -41,7 +47,9 @@ class LocationConnectionsWithPaymentModel {
         "id": id,
         "full_name": fullName,
         "location_id": locationId,
-        "address": address,
+        "home_address": homeAddress,
+        "street_address": streetAddress,
+        "mobile": mobile,
         "payment_status": paymentStatus,
       };
 }

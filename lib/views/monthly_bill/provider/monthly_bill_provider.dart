@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../../../utils/const.dart';
+import '../../../utils/keys.dart';
 
 class MonthlyBillProvider extends ChangeNotifier {
   bool isLoading = false;
@@ -84,6 +85,7 @@ class MonthlyBillProvider extends ChangeNotifier {
           showToast('Bill Added!', backgroundColor: primaryColor);
           getBills(connectionId: connectionId);
           amountController.clear();
+          await addIsSyncInSharedPref(Keys.isSync, false);
           return true;
         }
       }
@@ -102,6 +104,7 @@ class MonthlyBillProvider extends ChangeNotifier {
           showToast('Bill Updated!', backgroundColor: primaryColor);
           getBills(connectionId: connectionId);
           amountController.clear();
+          await addIsSyncInSharedPref(Keys.isSync, false);
           return true;
         }
       }
@@ -120,6 +123,7 @@ class MonthlyBillProvider extends ChangeNotifier {
                   .toString());
       log('isUpdate value is $isUpdate');
       if (isUpdate == 1) {
+        await addIsSyncInSharedPref(Keys.isSync, false);
         return true;
       } else {
         return false;

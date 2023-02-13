@@ -14,6 +14,8 @@ import '../../../DBHelpers/locations.dart';
 
 import 'package:intl/intl.dart';
 
+import '../../../utils/keys.dart';
+
 class HomeProvider extends ChangeNotifier {
   TextEditingController locationNameController = TextEditingController();
   var locationDb = Locations();
@@ -183,6 +185,7 @@ class HomeProvider extends ChangeNotifier {
           newLocation.id = id;
           showToast('Added', backgroundColor: primaryColor);
           locationNameController.clear();
+          await addIsSyncInSharedPref(Keys.isSync, false);
           getLocations();
           return true;
         }
@@ -202,6 +205,7 @@ class HomeProvider extends ChangeNotifier {
       int? affectedRow = await locationDb.delete(locations![index].id);
       if (affectedRow > 0) {
         removeFromLocationsList(index);
+        await addIsSyncInSharedPref(Keys.isSync, false);
       }
     } catch (e) {
       log(e.toString());

@@ -6,6 +6,7 @@ import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:b_networks/utils/KColors.dart';
+import 'package:b_networks/utils/keys.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -40,17 +41,37 @@ class CityDetailProvider extends ChangeNotifier {
   int? locationActiveConnections = 0;
   int? locationPendingConnections = 0;
   int? totalEarningOfLocationInMonth = 0;
+  LocationConnectionsWithPaymentModel? selectedConnectionToUpdate;
 
-  int? selectedUserIndexToUpdate = 0;
+  updateSelectedUserIndexToEdit(int? i) {
+    editNameController.text = selectedList == all
+        ? connectionsList[i!].fullName!
+        : selectedList == pending
+            ? pendingConnectionsList[i!].fullName!
+            : paidConnectionsList[i!].fullName!;
+    editHomeTextFieldController.text = selectedList == all
+        ? connectionsList[i].homeAddress!
+        : selectedList == pending
+            ? pendingConnectionsList[i].homeAddress!
+            : paidConnectionsList[i].homeAddress!;
 
-  updateSelectedUserIndexToEdit(int? id) {
-    for (int i = 0; i < connectionsList.length; i++) {
-      if (connectionsList[i].id == id) {
-        selectedUserIndexToUpdate = i;
-        break;
-      }
-    }
-    //selectedUserIndexToUpdate = index;
+    editStreetTextFieldController.text = selectedList == all
+        ? connectionsList[i].streetAddress!
+        : selectedList == pending
+            ? pendingConnectionsList[i].streetAddress!
+            : paidConnectionsList[i].streetAddress!;
+
+    editMobileFieldController.text = selectedList == all
+        ? connectionsList[i].mobile!
+        : selectedList == pending
+            ? pendingConnectionsList[i].mobile!
+            : paidConnectionsList[i].mobile!;
+    selectedConnectionToUpdate = selectedList == all
+        ? connectionsList[i]
+        : selectedList == pending
+            ? pendingConnectionsList[i]
+            : paidConnectionsList[i];
+    notifyListeners();
   }
 
   updateLoader(bool value) {
@@ -187,14 +208,6 @@ class CityDetailProvider extends ChangeNotifier {
       updateSelectedList(paid);
       emptyPaidConnectionList();
 
-      // updateLoader(true);
-      // await Future.delayed(const Duration(seconds: 1));
-      // List<Map<String, dynamic>> maps =
-      //     await connectionsDb.getPaidConnectionsOfLocation(
-      //             locationId: locationId,
-      //             month: currentMonth,
-      //             year: currentYear) ??
-      //         [];
       if (connectionsList.isNotEmpty) {
         for (int i = 0; i < connectionsList.length; i++) {
           log(connectionsList[i].fullName!.toString());
@@ -257,6 +270,7 @@ class CityDetailProvider extends ChangeNotifier {
         homeTextFieldController.clear();
         streetTextFieldController.clear();
         nameController.clear();
+        await addIsSyncInSharedPref(Keys.isSync, false);
         getAllConnectionsOfLocation(locationId: locationid);
         getLocationConnectionsStats(locationId: locationid!);
         // add this new connection's current month pending bill
@@ -275,6 +289,7 @@ class CityDetailProvider extends ChangeNotifier {
         if (billId == 0) {
           log('bill failed to add');
         } else {
+          await addIsSyncInSharedPref(Keys.isSync, false);
           log('bill added successfully');
         }
         return true;
@@ -285,9 +300,40 @@ class CityDetailProvider extends ChangeNotifier {
     }
   }
 
-  Future editConnection() async {
-    try {} catch (e) {
+  Future<bool> editConnection({int? locationId}) async {
+    try {
+      int? isUpdate = await connectionsDb.updateConnection(
+          connectionId: selectedConnectionToUpdate!.id,
+          fullName: editNameController.value.text,
+          homeAddress: editHomeTextFieldController.text.isEmpty
+              ? ''
+              : editHomeTextFieldController.value.text.trim(),
+          streetAddress: editStreetTextFieldController.text.isEmpty
+              ? ''
+              : editStreetTextFieldController.value.text.trim(),
+          mobile: editMobileFieldController.text.isEmpty
+              ? ''
+              : editMobileFieldController.value.text.trim(),
+          updatedAt:
+              DateTime.parse(DateFormat(dateFormat).format(DateTime.now()))
+                  .toString());
+
+      selectedConnectionToUpdate = null;
+      editHomeTextFieldController.clear();
+      editMobileFieldController.clear();
+      editNameController.clear();
+      notifyListeners();
+      editStreetTextFieldController.clear();
+      log('is update is $isUpdate');
+      if (isUpdate != 0) {
+        await addIsSyncInSharedPref(Keys.isSync, false);
+        getAllConnectionsOfLocation(locationId: locationId);
+        return true;
+      }
+      return false;
+    } catch (e) {
       log(e.toString());
+      return false;
     }
   }
 

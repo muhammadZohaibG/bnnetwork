@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../../../utils/const.dart';
+import '../../../utils/keys.dart';
 
 class ExpensesProvider extends ChangeNotifier {
   TextEditingController expenseTitleController = TextEditingController();
@@ -100,6 +101,7 @@ class ExpensesProvider extends ChangeNotifier {
         expenseAmountController.clear();
         expenseTitleController.clear();
         getExpenses();
+        await addIsSyncInSharedPref(Keys.isSync, false);
         return true;
       }
     } catch (e) {

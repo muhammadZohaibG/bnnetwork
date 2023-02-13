@@ -80,6 +80,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           settingsProvider.updateNotificationSwitch(v);
                         }),
                     const SizedBox(height: 10),
+                    SettingsScreenComponents().syncTile(
+                        leadingIcon: 'assets/icons/language.png',
+                        title: 'Backup',
+                        isSync: settingsProvider.backup,
+                        onSyncTap: () async {
+                          await settingsProvider.getUnSynchronizedData();
+                        }),
+                    const SizedBox(height: 10),
                     SettingsScreenComponents().tile(
                       leadingIcon: 'assets/icons/language.png',
                       title: 'Language',

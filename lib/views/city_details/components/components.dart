@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/location_connections_with_payment_model.dart';
+import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../app components/KLongCustomCard.dart';
 import '../../../app components/userCard.dart';
@@ -33,39 +35,46 @@ class CityDetailsScreenComponents {
     );
   }
 
-  Widget connectionsList(
-      {required List<LocationConnectionsWithPaymentModel>? connectionsList,
-      required Function()? onTap,
-      required Function()? editOnTap}) {
-    return ListView.builder(
-      shrinkWrap: true,
-      padding: const EdgeInsets.only(top: 15),
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: connectionsList!.length,
-      itemBuilder: (context, i) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: UserCard(
-              onPress: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MonthlyBillListScreen(
-                              userName: connectionsList[i].fullName!,
-                              connectionId: connectionsList[i].id,
-                              locationId: connectionsList[i].locationId,
-                            ))).then((value) => onTap!());
-              },
-              editOntap: () => editOnTap!(),
-              id: connectionsList[i].id,
-              mainTitle: connectionsList[i].fullName!,
-              description: connectionsList[i].address!,
-              billStatus: connectionsList[i].paymentStatus == null ||
-                      connectionsList[i].paymentStatus == pending
-                  ? pending
-                  : paid),
-        );
-      },
+  Widget connectionsList({
+    required List<LocationConnectionsWithPaymentModel>? connectionsList,
+    required Function()? onTap,
+    required Function()? editOnTap,
+  }) {
+    return Consumer<CityDetailProvider>(
+      builder: (context, cityDetailProvider, child) => ListView.builder(
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: 15),
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: connectionsList!.length,
+        itemBuilder: (context, i) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: UserCard(
+                onPress: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MonthlyBillListScreen(
+                                userName: connectionsList[i].fullName!,
+                                connectionId: connectionsList[i].id,
+                                locationId: connectionsList[i].locationId,
+                              ))).then((value) => onTap!());
+                },
+                editOntap: () {
+                  cityDetailProvider.updateSelectedUserIndexToEdit(i);
+                  editOnTap!();
+                },
+                id: connectionsList[i].id,
+                mainTitle: connectionsList[i].fullName!,
+                description:
+                    '${connectionsList[i].homeAddress!}, ${connectionsList[i].streetAddress}',
+                billStatus: connectionsList[i].paymentStatus == null ||
+                        connectionsList[i].paymentStatus == pending
+                    ? pending
+                    : paid),
+          );
+        },
+      ),
     );
   }
 

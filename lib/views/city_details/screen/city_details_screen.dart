@@ -182,7 +182,9 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                                                 .paidConnectionsList
                                             : cityDetailProvider
                                                 .pendingConnectionsList,
-                                    editOnTap: () => showEditUserDialog()
+                                    editOnTap: () {
+                                      showEditUserDialog();
+                                    }
                                     //   showEditUserDialog();
                                     ,
                                     onTap:
@@ -333,15 +335,16 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
         onButtonPress: () async {
           if (formKey.currentState!.validate()) {
             FocusScope.of(context).requestFocus(FocusNode());
+
             //
-            // bool? res = await cityDetailProvider.addConnection(
-            //     locationid: widget.locationId);
-            // if (res) {
-            //   if (!mounted) return;
-            //   Navigator.of(context).pop();
-            //   _homeProvider!
-            //       .increamentLocationActiveUsers(locationId: widget.locationId);
-            // }
+            bool? res = await cityDetailProvider.editConnection(
+                locationId: widget.locationId);
+            if (res) {
+              if (!mounted) return;
+              Navigator.of(context).pop();
+              //   _homeProvider!
+              //       .increamentLocationActiveUsers(locationId: widget.locationId);
+            }
           }
         },
         context: context,
@@ -359,7 +362,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                 ),
                 const SizedBox(height: 20),
                 KTextField(
-                  controller: cityDetailProvider.nameController,
+                  controller: cityDetailProvider.editNameController,
                   validator: (v) {
                     if (v!.isEmpty) {
                       return 'Enter name';
@@ -373,7 +376,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                 ),
                 const SizedBox(height: 20),
                 KTextField(
-                  controller: cityDetailProvider.homeTextFieldController,
+                  controller: cityDetailProvider.editHomeTextFieldController,
                   keyboardType: TextInputType.streetAddress,
                   validator: (v) {
                     if (v!.isEmpty) {
@@ -388,7 +391,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                 ),
                 const SizedBox(height: 20),
                 KTextField(
-                  controller: cityDetailProvider.streetTextFieldController,
+                  controller: cityDetailProvider.editStreetTextFieldController,
                   keyboardType: TextInputType.streetAddress,
                   validator: (v) {
                     if (v!.isEmpty) {
@@ -403,7 +406,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                 ),
                 const SizedBox(height: 20),
                 KTextField(
-                  controller: cityDetailProvider.mobileFieldController,
+                  controller: cityDetailProvider.editMobileFieldController,
                   keyboardType: TextInputType.number,
                   validator: (v) {
                     // if (v!.isEmpty) {

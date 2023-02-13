@@ -3,4 +3,5 @@ class Keys {
   static String image = 'image';
   static String email = 'email';
   static String token = 'token';
+  static String isSync = 'is-sync';
 }

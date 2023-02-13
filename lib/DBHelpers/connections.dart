@@ -46,7 +46,7 @@ class Connections {
     */
     //By Left Join
     var testTable = await dbClient!.rawQuery(
-        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS,, c.$STREETADDRESS, b.${Bills.STATUS} as payment_status
+        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS, c.$STREETADDRESS, c.$MOBILE, b.${Bills.STATUS} as payment_status
         from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.CONNECTIONID} == c.$ID 
         and b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
         where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId 
@@ -101,17 +101,26 @@ class Connections {
     return id;
   }
 
-  Future updateConnection(
+  Future<int> updateConnection(
       {required int? connectionId,
       required String? fullName,
       required String? homeAddress,
       required String? streetAddress,
-      required String? mobile}) async {
+      required String? mobile,
+      required String updatedAt}) async {
     var dbClient = await DBHelper().db;
 
     int? isUpdate = await dbClient!.rawUpdate(
-        'Update $TABLE SET $FULLNAME = ?, $HOMEMADDRESS = ?, $STREETADDRESS =?, $MOBILE = ? WHERE  $ID =?',
-        [fullName, homeAddress, streetAddress, mobile, connectionId]);
+        'Update $TABLE SET $FULLNAME = ?, $HOMEMADDRESS = ?, $STREETADDRESS =?, $MOBILE = ?, $ISSYNCHRONIZED = ?, $UPDATEDAT = ? WHERE  $ID = ?',
+        [
+          fullName,
+          homeAddress,
+          streetAddress,
+          mobile,
+          0,
+          updatedAt,
+          connectionId
+        ]);
 
     return isUpdate;
   }
@@ -147,5 +156,16 @@ class Connections {
         .rawQuery('Select * from $TABLE where $ID = "$connectionId"');
     log(updatedConnection.toString());
     return isUpdate;
+  }
+
+  Future getUnSynchronized() async {
+    var dbClient = await DBHelper().db;
+    var table = await dbClient!
+        .rawQuery('Select * from $TABLE where $ISSYNCHRONIZED = 0');
+    if (table.isEmpty) {
+      log('Connections Not Found');
+    }
+
+    return table;
   }
 }

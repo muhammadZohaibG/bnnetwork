@@ -1,4 +1,5 @@
 import 'package:b_networks/utils/KColors.dart';
+import 'package:b_networks/utils/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,4 +76,14 @@ Future<String?> getValueInSharedPref(String keyName) async {
 Future clearInSharedPref(String keyName) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.remove(keyName);
+}
+
+Future addIsSyncInSharedPref(String keyName, bool value) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool(keyName, value);
+}
+
+Future getIsSyncInSharedPref() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool(Keys.isSync);
 }

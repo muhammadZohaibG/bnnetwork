@@ -20,7 +20,7 @@ class Locations {
     var dbClient = await DBHelper().db;
     var table = await dbClient!.query(
       TABLE,
-      columns: [ID, NAME, CREATEDAT, UPDATEDAT],
+      columns: [ID, NAME, ISSYNCHRONIZED, CREATEDAT, UPDATEDAT],
       //where: "$CREATEDAT< '2023-01-30'"
     );
 
@@ -69,6 +69,17 @@ class Locations {
       return id;
     }
     return id;
+  }
+
+  Future getUnSynchronized() async {
+    var dbClient = await DBHelper().db;
+    var table = await dbClient!
+        .rawQuery('Select * from $TABLE where $ISSYNCHRONIZED = 0');
+    if (table.isEmpty) {
+      log('Locations Not Found');
+    }
+
+    return table;
   }
 
   Future<int> delete(int? id) async {

@@ -61,4 +61,15 @@ class Expenses {
 
     return amount[0]['Total'] ?? 0;
   }
+
+  Future getUnSynchronized() async {
+    var dbClient = await DBHelper().db;
+    var table = await dbClient!
+        .rawQuery('Select * from $TABLE where $ISSYNCHRONIZED = 0');
+    if (table.isEmpty) {
+      log('Expenses Not Found');
+    }
+
+    return table;
+  }
 }

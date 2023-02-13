@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/KColors.dart';
+import '../../../utils/const.dart';
 
 class SettingsScreenComponents {
   Widget tile(
@@ -57,6 +58,53 @@ class SettingsScreenComponents {
                 thumbColor: kscreenBG,
                 activeColor: primaryColor,
                 onChanged: onChanged),
+      ),
+    );
+  }
+
+  Widget syncTile(
+      {String? leadingIcon,
+      String? title = '',
+      bool? trailingValue,
+      required bool? isSync,
+      required Function()? onSyncTap}) {
+    return Container(
+      decoration: BoxDecoration(color: KColors().screenBG, boxShadow: [
+        BoxShadow(
+            offset: const Offset(0, 2),
+            color: KColors().darkGrey.withOpacity(0.04))
+      ]),
+      child: ListTile(
+        leading: Transform.translate(
+            offset: const Offset(0, 5),
+            child: Image.asset(leadingIcon!, height: 30, width: 30)),
+        title: Transform.translate(
+            offset: const Offset(0, -10),
+            child: Text(title!,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: kdarkGrey.withOpacity(0.4)))),
+        subtitle: Text(isSync! ? 'Synchronized' : 'Not Synchronized',
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: isSync ? KColors().accept : KColors().decline)),
+        trailing: InkWell(
+          onTap: () => onSyncTap!(),
+          child: Container(
+              decoration: BoxDecoration(
+                  color: isSync ? KColors().accept : KColors().decline,
+                  borderRadius: BorderRadius.circular(5)),
+              height: 22,
+              width: 65,
+              child: Center(
+                  child: Text('Sync Now',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: KColors().buttonTextWhite,
+                          fontWeight: FontWeight.w600)))),
+        ),
       ),
     );
   }
