@@ -12,6 +12,7 @@ class Locations {
   static const String TABLE = 'Locations';
   static const String ID = 'id';
   static const String NAME = 'name';
+  static const String ISSYNCHRONIZED = 'is_synchronized';
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 

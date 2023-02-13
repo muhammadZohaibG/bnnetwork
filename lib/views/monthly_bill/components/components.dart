@@ -16,6 +16,7 @@ class MonthlyBillsListScreenComponents {
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: KLongCustomCard(
                 onPress: () {},
+                id: billsList[i].id,
                 mainTitle: billsList[i].month!,
                 description: billsList[i].amount!.toString(),
                 billStatus: billsList[i].status!));

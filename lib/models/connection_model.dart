@@ -15,9 +15,11 @@ class ConnectionModel {
     this.id,
     this.locationId,
     this.fullName,
-    this.address,
+    this.homeAddress,
+    this.streetAddress,
     this.isActive,
     this.mobile,
+    this.isSynchronized,
     this.createdAt,
     this.updatedAt,
   });
@@ -25,9 +27,11 @@ class ConnectionModel {
   int? id;
   int? locationId;
   String? fullName;
-  String? address;
+  String? homeAddress;
+  String? streetAddress;
   int? isActive;
   String? mobile;
+  int? isSynchronized;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -36,9 +40,11 @@ class ConnectionModel {
         id: json["id"],
         locationId: json["location_id"],
         fullName: json["full_name"],
-        address: json["address"],
+        homeAddress: json["home_address"],
+        streetAddress: json["street_address"],
         isActive: json["is_active"],
         mobile: json["mobile"],
+        isSynchronized: json["is_synchronized"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -47,9 +53,10 @@ class ConnectionModel {
         "id": id,
         "location_id": locationId,
         "full_name": fullName,
-        "address": address,
+        "homee_address": homeAddress,
         "is_active": isActive,
         "mobile": mobile,
+        "is_synchronized": isSynchronized,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
       };

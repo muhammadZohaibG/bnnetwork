@@ -9,7 +9,7 @@ import '../../../utils/keys.dart';
 class SettingsProvider extends ChangeNotifier {
   bool isLoading = false;
   String? email = '';
-  String? profileImage;
+  String? profileImage = '';
   String? name = '';
   bool? notificationsSwitch = false;
 

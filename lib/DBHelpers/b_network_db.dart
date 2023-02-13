@@ -29,10 +29,9 @@ class DBHelper {
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, DB_NAME);
-    var db = await openDatabase(
-      path,
-      version: _databaseVersion, onCreate: _onCreate, // onUpgrade: _onUpgrade
-    );
+    var db = await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate // onUpgrade: _onUpgrade
+        );
     return db;
   }
 
@@ -40,6 +39,7 @@ class DBHelper {
     await db.execute('''CREATE TABLE ${Locations.TABLE} 
         (${Locations.ID} INTEGER PRIMARY KEY NOT NULL, 
         ${Locations.NAME} TEXT NOT NULL, 
+        ${Locations.ISSYNCHRONIZED} INTEGER DEFAULT 0, 
         ${Locations.CREATEDAT} TEXT NOT NULL, 
         ${Locations.UPDATEDAT} TEXT NOT NULL)''');
 
@@ -49,6 +49,7 @@ class DBHelper {
         ${Expenses.AMOUNT} INTEGER NOT NULL, 
         ${Expenses.MONTH} TEXT NOT NULL, 
         ${Expenses.YEAR} TEXT NOT NULL, 
+        ${Expenses.ISSYNCHRONIZED} INTEGER DEFAULT 0, 
         ${Expenses.CREATEDAT} TEXT NOT NULL, 
         ${Expenses.UPDATEDAT} TEXT NOT NULL)''');
 
@@ -56,9 +57,11 @@ class DBHelper {
         (${Connections.ID} INTEGER PRIMARY KEY NOT NULL, 
         ${Connections.LOCATIONID} INTEGER NOT NULL, 
         ${Connections.FULLNAME} TEXT NOT NULL, 
-        ${Connections.ADDRESS} TEXT NOT NULL, 
+        ${Connections.HOMEMADDRESS} TEXT NOT NULL, 
+        ${Connections.STREETADDRESS} TEXT NOT NULL, 
         ${Connections.MOBILE} TEXT NOT NULL, 
         ${Connections.ISACTIVE} INTEGER DEFAULT 1, 
+        ${Connections.ISSYNCHRONIZED} INTEGER DEFAULT 0, 
         ${Connections.CREATEDAT} TEXT NOT NULL, 
         ${Connections.UPDATEDAT} TEXT NOT NULL,
         FOREIGN KEY (${Connections.LOCATIONID}) REFERENCES ${Locations.TABLE} (id) ON DELETE NO ACTION ON UPDATE NO ACTION)''');
@@ -70,7 +73,8 @@ class DBHelper {
          ${Bills.AMOUNT} INTEGER NOT NULL, 
          ${Bills.MONTH} TEXT NOT NULL, 
          ${Bills.YEAR} TEXT NOT NULL, 
-         ${Bills.STATUS} TEXT DEFAULT $pending, 
+         ${Bills.STATUS} TEXT DEFAULT $pending,
+         ${Bills.ISSYNCHRONIZED} INTEGER DEFAULT 0, 
          ${Bills.CREATEDAT} TEXT NOT NULL, 
          ${Bills.UPDATEDAT} TEXT NOT NULL, 
          FOREIGN KEY (${Bills.LOCATIONID}) REFERENCES ${Locations.TABLE}(id) ON DELETE NO ACTION ON UPDATE NO ACTION, 

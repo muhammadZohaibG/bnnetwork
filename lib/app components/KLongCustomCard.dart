@@ -5,6 +5,7 @@ import '../utils/KColors.dart';
 
 class KLongCustomCard extends StatelessWidget {
   VoidCallback? onPress;
+  int? id;
   String? descriptionImgPath;
   String mainTitle;
   String description;
@@ -12,6 +13,7 @@ class KLongCustomCard extends StatelessWidget {
   KLongCustomCard(
       {super.key,
       this.onPress,
+      required this.id,
       required this.mainTitle,
       required this.description,
       required this.billStatus,

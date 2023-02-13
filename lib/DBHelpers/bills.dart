@@ -16,6 +16,7 @@ class Bills {
   static const String MONTH = 'month';
   static const String YEAR = 'year';
   static const String STATUS = 'status';
+  static const String ISSYNCHRONIZED = 'is_synchronized';
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 

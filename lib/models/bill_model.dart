@@ -17,6 +17,7 @@ class BillModel {
     this.month,
     this.year,
     this.status,
+    this.isSynchronized,
     this.createdAt,
     this.updatedAt,
   });
@@ -28,6 +29,7 @@ class BillModel {
   String? month;
   String? year;
   String? status;
+  int? isSynchronized;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -39,6 +41,7 @@ class BillModel {
         month: json["month"],
         year: json["year"],
         status: json["status"],
+        isSynchronized: json["is_synchronized"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -51,6 +54,7 @@ class BillModel {
         "month": month,
         "year": year,
         "status": status,
+        "is_synchronized": isSynchronized,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
       };

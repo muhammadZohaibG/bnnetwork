@@ -18,12 +18,32 @@ class KCityLongCard extends StatelessWidget {
   Widget build(BuildContext context) {
     KColors kColors = KColors();
     return Container(
-      height: 90,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Padding(
+        // height: 10,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: ListTile(
+          title: Text(
+            cityName,
+            style: TextStyle(
+                fontSize: 20,
+                color: kColors.darkGrey,
+                fontWeight: FontWeight.w600),
+          ),
+          subtitle: Transform.translate(
+            offset: const Offset(0, 10),
+            child: Text(
+              "Total Users:    $activeUsers",
+              style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        )
+        /*Padding(
         padding: const EdgeInsets.only(left: 20, right: 30, top: 10),
         child: Row(
           children: [
@@ -68,7 +88,7 @@ class KCityLongCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      ),*/
+        );
   }
 }

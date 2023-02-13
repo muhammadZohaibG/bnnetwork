@@ -79,6 +79,7 @@ class _MonthlyBillListScreenState extends State<MonthlyBillListScreen> {
                                 ? AppComponents().shimmerList(context,
                                     child: KLongCustomCard(
                                         onPress: () {},
+                                        id: 0,
                                         mainTitle: '',
                                         description: '',
                                         billStatus: ''))

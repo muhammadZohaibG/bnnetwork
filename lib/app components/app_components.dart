@@ -16,16 +16,16 @@ class AppComponents {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total:',
+                'Total Users:',
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: kdarkGrey,
                     fontWeight: FontWeight.w600),
               ),
               Text(
                 '$totalConnections  ',
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: kdarkGrey,
                     fontWeight: FontWeight.w600),
               ),
@@ -43,16 +43,16 @@ class AppComponents {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Pending:',
+                      'Pending Users:',
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: kdarkGrey,
                           fontWeight: FontWeight.w600),
                     ),
                     Text(
                       '$totalUnpaidConnections  ',
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: kdarkGrey,
                           fontWeight: FontWeight.w600),
                     )

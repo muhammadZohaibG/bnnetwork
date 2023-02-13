@@ -17,7 +17,7 @@ class KUnderTopBar extends StatelessWidget {
           Text(
             leftText,
             style: TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 color: kColors.darkGrey,
                 fontWeight: FontWeight.w500),
           ),

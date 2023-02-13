@@ -5,6 +5,7 @@ import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app components/KLongCustomCard.dart';
+import '../../../app components/userCard.dart';
 import '../../../utils/KColors.dart';
 import '../../../utils/const.dart';
 import '../../monthly_bill/screen/monthly_bill_list_screen.dart';
@@ -34,7 +35,8 @@ class CityDetailsScreenComponents {
 
   Widget connectionsList(
       {required List<LocationConnectionsWithPaymentModel>? connectionsList,
-      required Function()? onTap}) {
+      required Function()? onTap,
+      required Function()? editOnTap}) {
     return ListView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 15),
@@ -43,7 +45,7 @@ class CityDetailsScreenComponents {
       itemBuilder: (context, i) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: KLongCustomCard(
+          child: UserCard(
               onPress: () {
                 Navigator.push(
                     context,
@@ -54,6 +56,8 @@ class CityDetailsScreenComponents {
                               locationId: connectionsList[i].locationId,
                             ))).then((value) => onTap!());
               },
+              editOntap: () => editOnTap!(),
+              id: connectionsList[i].id,
               mainTitle: connectionsList[i].fullName!,
               description: connectionsList[i].address!,
               billStatus: connectionsList[i].paymentStatus == null ||

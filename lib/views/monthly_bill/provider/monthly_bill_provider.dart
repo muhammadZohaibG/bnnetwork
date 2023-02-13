@@ -92,6 +92,7 @@ class MonthlyBillProvider extends ChangeNotifier {
         BillModel availableBill = BillModel.fromJson(maps[0]);
         availableBill.amount = int.parse(amountController.value.text.trim());
         availableBill.status = paid;
+        availableBill.isSynchronized = 0;
         log(availableBill.id.toString());
         int? id = await billsDb.update(availableBill);
         if (id == 0) {

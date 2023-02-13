@@ -161,6 +161,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                             child: KLongCustomCard(
                                 onPress: () {},
                                 mainTitle: '',
+                                id: 0,
                                 description: '',
                                 billStatus: ''))
                         : cityDetailProvider.connectionsList.isEmpty
@@ -181,6 +182,9 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                                                 .paidConnectionsList
                                             : cityDetailProvider
                                                 .pendingConnectionsList,
+                                    editOnTap: () => showEditUserDialog()
+                                    //   showEditUserDialog();
+                                    ,
                                     onTap:
                                         () =>
                                             cityDetailProvider
@@ -199,6 +203,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                                             connectionsList:
                                                 cityDetailProvider
                                                     .searchedConnectionsList,
+                                            editOnTap: () {},
                                             onTap: () => cityDetailProvider
                                                 .getLocationConnectionsStats(
                                                     locationId:
@@ -270,11 +275,11 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                 ),
                 const SizedBox(height: 20),
                 KTextField(
-                  controller: cityDetailProvider.locationTextFieldController,
+                  controller: cityDetailProvider.homeTextFieldController,
                   keyboardType: TextInputType.streetAddress,
                   validator: (v) {
                     if (v!.isEmpty) {
-                      return 'Enter address';
+                      return 'Enter home address';
                     }
                     return null;
                   },
@@ -282,6 +287,119 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
                     newAddress = value;
                   },
                   hintText: "House No.",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.streetTextFieldController,
+                  keyboardType: TextInputType.streetAddress,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter Street address:';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "Street No.",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.mobileFieldController,
+                  keyboardType: TextInputType.number,
+                  validator: (v) {
+                    // if (v!.isEmpty) {
+                    //   return 'Enter mobile number';
+                    // }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "Mobile",
+                )
+              ],
+            ),
+          ),
+        ]);
+  }
+
+  showEditUserDialog() {
+    final cityDetailProvider =
+        Provider.of<CityDetailProvider>(context, listen: false);
+    return kDialogBox.showDialogBox(
+        dialogBoxHeight: 230,
+        buttonText: "Edit User",
+        onButtonPress: () async {
+          if (formKey.currentState!.validate()) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            //
+            // bool? res = await cityDetailProvider.addConnection(
+            //     locationid: widget.locationId);
+            // if (res) {
+            //   if (!mounted) return;
+            //   Navigator.of(context).pop();
+            //   _homeProvider!
+            //       .increamentLocationActiveUsers(locationId: widget.locationId);
+            // }
+          }
+        },
+        context: context,
+        widgets: <Widget>[
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
+                Text(
+                  "Edit user",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: kColors.statsUnderText,
+                      fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.nameController,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter name';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newUser = value;
+                  },
+                  hintText: "Full Name",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.homeTextFieldController,
+                  keyboardType: TextInputType.streetAddress,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter home address';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "House No.",
+                ),
+                const SizedBox(height: 20),
+                KTextField(
+                  controller: cityDetailProvider.streetTextFieldController,
+                  keyboardType: TextInputType.streetAddress,
+                  validator: (v) {
+                    if (v!.isEmpty) {
+                      return 'Enter Street address:';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    newAddress = value;
+                  },
+                  hintText: "Street No.",
                 ),
                 const SizedBox(height: 20),
                 KTextField(

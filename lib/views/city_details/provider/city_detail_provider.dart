@@ -21,8 +21,16 @@ class CityDetailProvider extends ChangeNotifier {
   List<LocationConnectionsWithPaymentModel> pendingConnectionsList = [];
   List<LocationConnectionsWithPaymentModel> searchedConnectionsList = [];
   TextEditingController nameController = TextEditingController();
-  TextEditingController locationTextFieldController = TextEditingController();
+  TextEditingController homeTextFieldController = TextEditingController();
+  TextEditingController streetTextFieldController = TextEditingController();
   TextEditingController mobileFieldController = TextEditingController();
+
+  //edit controllers
+  TextEditingController editNameController = TextEditingController();
+  TextEditingController editHomeTextFieldController = TextEditingController();
+  TextEditingController editStreetTextFieldController = TextEditingController();
+  TextEditingController editMobileFieldController = TextEditingController();
+
   TextEditingController searchConnectionController = TextEditingController();
   String currentMonth = DateFormat('MMMM').format(DateTime.now());
   String currentYear = DateFormat('y').format(DateTime.now());
@@ -32,6 +40,18 @@ class CityDetailProvider extends ChangeNotifier {
   int? locationActiveConnections = 0;
   int? locationPendingConnections = 0;
   int? totalEarningOfLocationInMonth = 0;
+
+  int? selectedUserIndexToUpdate = 0;
+
+  updateSelectedUserIndexToEdit(int? id) {
+    for (int i = 0; i < connectionsList.length; i++) {
+      if (connectionsList[i].id == id) {
+        selectedUserIndexToUpdate = i;
+        break;
+      }
+    }
+    //selectedUserIndexToUpdate = index;
+  }
 
   updateLoader(bool value) {
     isLoading = value;
@@ -214,9 +234,12 @@ class CityDetailProvider extends ChangeNotifier {
       ConnectionModel connection = ConnectionModel()
         ..locationId = locationid
         ..fullName = nameController.value.text.trim()
-        ..address = locationTextFieldController.text.isEmpty
+        ..homeAddress = homeTextFieldController.text.isEmpty
             ? ''
-            : locationTextFieldController.value.text.trim()
+            : homeTextFieldController.value.text.trim()
+        ..streetAddress = streetTextFieldController.text.isEmpty
+            ? ''
+            : streetTextFieldController.value.text.trim()
         ..mobile = mobileFieldController.text.isEmpty
             ? ''
             : mobileFieldController.value.text.trim()
@@ -231,7 +254,8 @@ class CityDetailProvider extends ChangeNotifier {
       } else {
         showToast('Added', backgroundColor: primaryColor);
         mobileFieldController.clear();
-        locationTextFieldController.clear();
+        homeTextFieldController.clear();
+        streetTextFieldController.clear();
         nameController.clear();
         getAllConnectionsOfLocation(locationId: locationid);
         getLocationConnectionsStats(locationId: locationid!);
@@ -258,6 +282,12 @@ class CityDetailProvider extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  Future editConnection() async {
+    try {} catch (e) {
+      log(e.toString());
     }
   }
 

@@ -108,8 +108,8 @@ class _HomePageState extends State<HomePage> {
                                                       const ExpensesPage()))
                                           .then((value) => getOverallStats());
                                     }),
-                                const SizedBox(height: 10),
-                                GestureDetector(
+                                const SizedBox(height: 20),
+                                /* GestureDetector(
                                   onTap: () {
                                     getOverallStats();
                                   },
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                           color: KColors().darkGrey,
                                           fontWeight: FontWeight.w500)),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 10),*/
                                 AppComponents().connectionsStatsRow(
                                     totalConnections:
                                         homeProvider.totalActiveConnections!,

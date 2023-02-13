@@ -15,9 +15,11 @@ class Connections {
   static const String ID = 'id';
   static const String FULLNAME = 'full_name';
   static const String LOCATIONID = 'location_id';
-  static const String ADDRESS = 'address';
+  static const String HOMEMADDRESS = 'home_address';
+  static const String STREETADDRESS = 'street_address';
   static const String ISACTIVE = 'is_active';
   static const String MOBILE = 'mobile';
+  static const String ISSYNCHRONIZED = 'is_synchronized';
   static const String CREATEDAT = 'created_at';
   static const String UPDATEDAT = 'updated_at';
 
@@ -44,10 +46,10 @@ class Connections {
     */
     //By Left Join
     var testTable = await dbClient!.rawQuery(
-        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$ADDRESS, b.${Bills.STATUS} as payment_status
+        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS,, c.$STREETADDRESS, b.${Bills.STATUS} as payment_status
         from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.CONNECTIONID} == c.$ID 
         and b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
-        where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId ORDER BY (c.$CREATEDAT) DESC
+        where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId 
         ''');
     if (testTable.isEmpty) {
       log('Connection Not Found');
@@ -64,7 +66,7 @@ class Connections {
     try {
       var dbClient = await DBHelper().db;
       var table = await dbClient!.rawQuery(
-          '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$ADDRESS, b.${Bills.STATUS} as payment_status
+          '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS, c.$STREETADDRESS, b.${Bills.STATUS} as payment_status
         from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.STATUS} != "$paid" 
         and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
         where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId ORDER BY (c.$CREATEDAT) DESC
@@ -72,7 +74,7 @@ class Connections {
       if (table.isEmpty) {
         log('Connection Not Found');
       }
-      log('table result ======>>>>>>>${table.toList()}');
+      log('table result ======>>>>>>> ${table.toList()}');
 
       return table;
     } catch (e) {
@@ -86,10 +88,10 @@ class Connections {
       log('inserting');
 
       return await txn.rawInsert(
-          '''INSERT INTO $TABLE ($FULLNAME,$LOCATIONID, $ADDRESS, $MOBILE,  $CREATEDAT, $UPDATEDAT) 
+          '''INSERT INTO $TABLE ($FULLNAME,$LOCATIONID, $HOMEMADDRESS, $STREETADDRESS , $MOBILE,  $CREATEDAT, $UPDATEDAT) 
           VALUES("${connection.fullName}",
           ${connection.locationId}, 
-          "${connection.address}", "${connection.mobile}",
+          "${connection.homeAddress}", "${connection.streetAddress}", "${connection.mobile}",
           "${connection.createdAt}","${connection.updatedAt}")''');
     });
     if (id != 0) {
@@ -97,6 +99,21 @@ class Connections {
       log('new connection id is $id');
     }
     return id;
+  }
+
+  Future updateConnection(
+      {required int? connectionId,
+      required String? fullName,
+      required String? homeAddress,
+      required String? streetAddress,
+      required String? mobile}) async {
+    var dbClient = await DBHelper().db;
+
+    int? isUpdate = await dbClient!.rawUpdate(
+        'Update $TABLE SET $FULLNAME = ?, $HOMEMADDRESS = ?, $STREETADDRESS =?, $MOBILE = ? WHERE  $ID =?',
+        [fullName, homeAddress, streetAddress, mobile, connectionId]);
+
+    return isUpdate;
   }
 
   Future countActiveConnections() async {
@@ -122,8 +139,8 @@ class Connections {
     var dbClient = await DBHelper().db;
 
     int? isUpdate = await dbClient!.rawUpdate(
-        'Update $TABLE SET $ISACTIVE = ?, $UPDATEDAT = ? WHERE $ID = ? ',
-        [0, updatedAt, connectionId]);
+        'Update $TABLE SET $ISACTIVE = ?, $ISSYNCHRONIZED=?, $UPDATEDAT = ? WHERE $ID = ? ',
+        [0, 0, updatedAt, connectionId]);
     log(isUpdate.toString());
 
     var updatedConnection = await dbClient
