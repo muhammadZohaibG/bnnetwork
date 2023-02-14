@@ -53,12 +53,17 @@ class LoginProvider extends ChangeNotifier {
         // call login api
         Map<String, dynamic> user = await authLogin(email: email, name: name);
         log(user.toString());
+        log('message ${user['data']['address']}');
         if (user['status'] != null && user['status'] == 200) {
           log(user['message']);
           await storeInSharedPref(Keys.email, email.toString());
           await storeInSharedPref(Keys.name, name.toString());
           await storeInSharedPref(Keys.image, user['data']['profile_picture']);
           await storeInSharedPref(Keys.token, user['data']['token']);
+          await storeInSharedPref(Keys.address, user['data']['address']);
+          await storeInSharedPref(Keys.mobile, user['data']['mobile']);
+          await storeInSharedPref(
+              Keys.companyName, user['data']['company_name']);
           updateLoading(false);
           return true;
         } else {

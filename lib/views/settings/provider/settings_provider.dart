@@ -4,10 +4,12 @@ import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
 import 'package:b_networks/DBHelpers/locations.dart';
+import 'package:b_networks/api_requests/update_profile_request.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/expense_model.dart';
 import 'package:b_networks/models/location_model.dart';
+import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -22,13 +24,22 @@ class SettingsProvider extends ChangeNotifier {
   bool isLoading = false;
   String? email = '';
   String? profileImage = '';
-  String? name = '';
+  String? fullName = '';
+  String? company = '';
+  String? phoneNumber = '';
+  String? address = '';
   bool? notificationsSwitch = false;
   bool? backup = false;
   List<BillModel> billsList = [];
   List<LocationModel> locationsList = [];
   List<ConnectionModel> connectionsList = [];
   List<ExpenseModel> expenses = [];
+
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController companyController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   updateLoading(bool value) {
     isLoading = value;
@@ -51,9 +62,18 @@ class SettingsProvider extends ChangeNotifier {
       email = await getValueInSharedPref(Keys.email);
       profileImage = await getValueInSharedPref(Keys.image);
       log(profileImage!);
-
-      name = await getValueInSharedPref(Keys.name);
+      fullName = await getValueInSharedPref(Keys.name);
+      company = await getValueInSharedPref(Keys.companyName);
+      phoneNumber = await getValueInSharedPref(Keys.mobile);
+      address = await getValueInSharedPref(Keys.address);
       backup = await getIsSyncInSharedPref();
+      log('fullName: $fullName \ncompany: $company \nphoneNumber: $phoneNumber \naddress: $address');
+      fullNameController.text = fullName!;
+      emailController.text = email!;
+      companyController.text = company!;
+      addressController.text = address!;
+      phoneNumberController.text= phoneNumber!;
+
       notifyListeners();
       updateLoading(false);
     } catch (e) {
@@ -62,27 +82,63 @@ class SettingsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool>? updateProfile() async {
+    try {
+      updateLoading(true);
+      Map<String, dynamic>? userDetails = await updateProfileRequest(
+          phoneNumber: phoneNumberController.value.text,
+          fullName: fullNameController.value.text,
+          companyName: companyController.value.text,
+          address: addressController.value.text);
+      log(userDetails.toString());
+      if (userDetails != null) {
+        await storeInSharedPref(Keys.name, userDetails['data']['name']);
+        await storeInSharedPref(
+            Keys.image, userDetails['data']['profile_picture']);
+        await storeInSharedPref(
+            Keys.companyName, userDetails['data']['company_name']);
+        await storeInSharedPref(Keys.address, userDetails['data']['address']);
+        await storeInSharedPref(Keys.mobile, userDetails['data']['mobile']);
+        showToast('Profile Updated!', backgroundColor: primaryColor); updateLoading(false);
+        return true;
+      }
+      updateLoading(false);
+      return false;
+    } catch (e) {
+      log(e.toString());
+      updateLoading(false);
+      return false;
+    }
+  }
+
   Future getUnSynchronizedData() async {
     try {
-      List<Map<String, dynamic>> table = await billsDb.getUnSynchronized();
-      log(table.toList().toString());
-      for (var e in table) {
+      List<Map<String, dynamic>> billsTable = await billsDb.getUnSynchronized();
+      //log(billsTable.toList().toString());
+      for (var e in billsTable) {
         addInList(billsList, BillModel.fromJson(e));
       }
       List<Map<String, dynamic>> locationsTable =
           await locationsDb.getUnSynchronized();
-      log('locations ====================>>>>>>>');
-      log(locationsTable.toList().toString());
+      // log('locations ====================>>>>>>>');
+      // log(locationsTable.toList().toString());
 
       List<Map<String, dynamic>> connectionTable =
           await connectionsDb.getUnSynchronized();
-      log('connections ====================>>>>>>>');
-      log(connectionTable.toList().toString());
+      // log('connections ====================>>>>>>>');
+      // log(connectionTable.toList().toString());
 
       List<Map<String, dynamic>> expensesTable =
           await expensesDb.getUnSynchronized();
-      log('expenses ====================>>>>>>>');
-      log(expensesTable.toList().toString());
+      // log('expenses ====================>>>>>>>');
+      // log(expensesTable.toList().toString());
+      Map<String, dynamic> data = {
+        "locations_list": locationsTable,
+        "connections_list": connectionTable,
+        "bills_list": billsTable,
+        "expenses_list": expensesTable
+      };
+      log(data.toString());
     } catch (e) {
       log(e.toString());
     }
@@ -98,6 +154,14 @@ class SettingsProvider extends ChangeNotifier {
       await clearInSharedPref(Keys.token);
       String? name = await getValueInSharedPref(Keys.name);
       log(name!);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future addCurrentMonthBills() async {
+    try {
+      List<Map<String, dynamic>> table = await billsDb.addCurrentMonthBills();
     } catch (e) {
       log(e.toString());
     }

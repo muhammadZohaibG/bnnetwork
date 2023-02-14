@@ -66,7 +66,7 @@ class SettingsScreenComponents {
       {String? leadingIcon,
       String? title = '',
       bool? trailingValue,
-      required bool? isSync,
+      required bool isSync,
       required Function()? onSyncTap}) {
     return Container(
       decoration: BoxDecoration(color: KColors().screenBG, boxShadow: [
@@ -85,7 +85,7 @@ class SettingsScreenComponents {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: kdarkGrey.withOpacity(0.4)))),
-        subtitle: Text(isSync! ? 'Synchronized' : 'Not Synchronized',
+        subtitle: Text(isSync ? 'Synchronized' : 'Not Synchronized',
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,

@@ -3,8 +3,10 @@
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/b_network_db.dart';
+import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/utils/const.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Bills {
@@ -143,6 +145,24 @@ class Bills {
     log(amount[0]['Total'].toString());
 
     return amount[0]['Total'] ?? 0;
+  }
+
+  Future addCurrentMonthBills() async {
+    //select user id's where from connections where
+    var dbClient = await DBHelper().db;
+    var connectionsWithNoBill = await dbClient!.rawQuery(
+        '''Select ${Bills.CONNECTIONID} from ${Bills.TABLE} where ${Bills.MONTH} == "February"'''
+        //   '''Select ${Connections.TABLE}.${Connections.ID} from ${Connections.TABLE}
+        //   LEFT OUTER JOIN ${Bills.TABLE} ON ${Bills.TABLE}.${Bills.CONNECTIONID}==${Connections.TABLE}.${Connections.ID}
+        //   and  ${Bills.TABLE}.${Bills.MONTH} == "March"
+        //  '''
+        );
+
+    if (connectionsWithNoBill.isEmpty) {
+      log('all connections bills are added ');
+    }
+    log(connectionsWithNoBill.toList().toString());
+    return connectionsWithNoBill;
   }
 
   Future getUnSynchronized() async {

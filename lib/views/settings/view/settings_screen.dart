@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         : SettingsScreenComponents().profileImage(
                             imageUrl: settingsProvider.profileImage!),
                     const SizedBox(height: 20),
-                    Text(settingsProvider.name!,
+                    Text(settingsProvider.fullName!,
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
@@ -83,16 +83,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     SettingsScreenComponents().syncTile(
                         leadingIcon: 'assets/icons/language.png',
                         title: 'Backup',
-                        isSync: settingsProvider.backup,
+                        isSync: settingsProvider.backup ?? true,
                         onSyncTap: () async {
                           await settingsProvider.getUnSynchronizedData();
                         }),
                     const SizedBox(height: 10),
                     SettingsScreenComponents().tile(
-                      leadingIcon: 'assets/icons/language.png',
-                      title: 'Language',
-                      subTitle: 'English',
-                    ),
+                        leadingIcon: 'assets/icons/language.png',
+                        title: 'Language',
+                        subTitle: 'English',
+                        tileOnTap: () {
+                          settingsProvider.addCurrentMonthBills();
+                        }),
                     const SizedBox(height: 10),
                     SettingsScreenComponents().tile(
                         leadingIcon: 'assets/icons/terms.png',
