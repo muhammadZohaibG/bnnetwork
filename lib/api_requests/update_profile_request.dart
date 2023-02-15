@@ -6,12 +6,12 @@ import 'package:b_networks/utils/const.dart';
 import 'package:b_networks/utils/keys.dart';
 import 'package:http/http.dart' as http;
 
-Future<dynamic> updateProfileRequest({
-  required String phoneNumber,
-  required String fullName,
-  required String companyName,
-  required String address,
-}) async {
+Future<dynamic> updateProfileRequest(
+    {required String phoneNumber,
+    required String fullName,
+    required String companyName,
+    required String address,
+    required String image}) async {
   try {
     // get token for shared preference
     String? token = await getValueInSharedPref(Keys.token);
@@ -23,6 +23,8 @@ Future<dynamic> updateProfileRequest({
       'mobile': phoneNumber,
       'address': address
     });
+    request.files
+        .add(await http.MultipartFile.fromPath('profile_picture', image));
 
     request.headers.addAll(headers);
 

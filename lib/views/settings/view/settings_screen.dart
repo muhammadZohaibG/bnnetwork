@@ -6,6 +6,7 @@ import 'package:b_networks/views/login/view/login_screen.dart';
 import 'package:b_networks/views/settings/components/components.dart';
 import 'package:b_networks/views/settings/components/settings_topbar.dart';
 import 'package:b_networks/views/settings/provider/settings_provider.dart';
+import 'package:b_networks/views/settings/view/update_profile_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: KColors().screenBG,
       appBar: PreferredSize(
         preferredSize: Size(width(context), 50),
-        child: SettingsTopBar(),
+        child: SettingsTopBar(onEditIconTap: () {
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UpdateProfileScreen()))
+              .then((value) {
+            function();
+          });
+        }),
       ),
       body: Consumer<SettingsProvider>(
         builder: (context, settingsProvider, child) {

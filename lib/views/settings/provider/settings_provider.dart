@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
@@ -12,6 +13,7 @@ import 'package:b_networks/models/location_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../utils/const.dart';
 import '../../../utils/keys.dart';
@@ -41,6 +43,9 @@ class SettingsProvider extends ChangeNotifier {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
+  File? imageFile;
+  XFile? pickedFile;
+
   updateLoading(bool value) {
     isLoading = value;
     notifyListeners();
@@ -53,6 +58,21 @@ class SettingsProvider extends ChangeNotifier {
 
   addInList(List<dynamic> list, dynamic value) {
     list.add(value);
+    notifyListeners();
+  }
+
+  Future selectImage(ImageSource source) async {
+    pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      imageFile = File(pickedFile!.path);
+      notifyListeners();
+      log(imageFile!.path.split('/').last);
+    }
+  }
+
+  clearImage() {
+    pickedFile = null;
+    imageFile = null;
     notifyListeners();
   }
 
@@ -72,7 +92,7 @@ class SettingsProvider extends ChangeNotifier {
       emailController.text = email!;
       companyController.text = company!;
       addressController.text = address!;
-      phoneNumberController.text= phoneNumber!;
+      phoneNumberController.text = phoneNumber!;
 
       notifyListeners();
       updateLoading(false);
@@ -89,7 +109,8 @@ class SettingsProvider extends ChangeNotifier {
           phoneNumber: phoneNumberController.value.text,
           fullName: fullNameController.value.text,
           companyName: companyController.value.text,
-          address: addressController.value.text);
+          address: addressController.value.text,
+          image: imageFile != null ? imageFile!.path : '');
       log(userDetails.toString());
       if (userDetails != null) {
         await storeInSharedPref(Keys.name, userDetails['data']['name']);
@@ -99,9 +120,12 @@ class SettingsProvider extends ChangeNotifier {
             Keys.companyName, userDetails['data']['company_name']);
         await storeInSharedPref(Keys.address, userDetails['data']['address']);
         await storeInSharedPref(Keys.mobile, userDetails['data']['mobile']);
-        showToast('Profile Updated!', backgroundColor: primaryColor); updateLoading(false);
+        showToast('Profile Updated!', backgroundColor: primaryColor);
+        updateLoading(false);
+        clearImage();
         return true;
       }
+      clearImage();
       updateLoading(false);
       return false;
     } catch (e) {

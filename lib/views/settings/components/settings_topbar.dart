@@ -6,7 +6,9 @@ import '../../../app components/KCircle.dart';
 import '../../../utils/KColors.dart';
 
 class SettingsTopBar extends StatelessWidget {
-  SettingsTopBar({super.key});
+  Function()? onEditIconTap;
+
+  SettingsTopBar({super.key, required this.onEditIconTap});
   KColors kColors = KColors();
 
   @override
@@ -29,11 +31,7 @@ class SettingsTopBar extends StatelessWidget {
             scale: 1.1,
           ),
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UpdateProfileScreen(),
-                ));
+            onEditIconTap!();
           }),
     );
   }

@@ -5,6 +5,44 @@ import '../../../app components/KTopBar.dart';
 import '../../../utils/KColors.dart';
 
 class UpdateScreenComponents {
+  void showBottomSheet(BuildContext context,
+      {Function()? onCameraTap, Function()? onGalleryTap}) {
+    showModalBottomSheet<void>(
+      backgroundColor: kscreenBG,
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListTile(
+              title: const Text(
+                'Gallery',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+              leading: const Icon(Icons.image),
+              onTap: () async {
+                Navigator.of(context).pop();
+                await onGalleryTap!();
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Camera',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+              leading: const Icon(Icons.camera),
+              onTap: () async {
+                Navigator.of(context).pop();
+                await onCameraTap!();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget profileImage(
       {required String? imageUrl, required Function()? onCameraTap}) {
     return Stack(children: [

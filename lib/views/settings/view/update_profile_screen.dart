@@ -6,6 +6,7 @@ import 'package:b_networks/utils/const.dart';
 import 'package:b_networks/views/settings/components/update_screen_components.dart';
 import 'package:b_networks/views/settings/provider/settings_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app components/KMainButton.dart';
@@ -38,9 +39,40 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 30),
-                      UpdateScreenComponents().profileImage(
-                          imageUrl: settingsProvider.profileImage,
-                          onCameraTap: () {}),
+                      settingsProvider.imageFile != null
+                          ? Stack(children: [
+                              CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor:
+                                      primaryColor.withOpacity(0.2),
+                                  backgroundImage:
+                                      Image.file(settingsProvider.imageFile!)
+                                          .image),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        settingsProvider.clearImage();
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: kscreenBG),
+                                          child: const Icon(Icons.close,
+                                              color: Colors.black))))
+                            ])
+                          : UpdateScreenComponents().profileImage(
+                              imageUrl: settingsProvider.profileImage,
+                              onCameraTap: () {
+                                UpdateScreenComponents().showBottomSheet(
+                                    context,
+                                    onCameraTap: () => settingsProvider
+                                        .selectImage(ImageSource.camera),
+                                    onGalleryTap: () => settingsProvider
+                                        .selectImage(ImageSource.gallery));
+                              }),
                       const SizedBox(height: 50),
                       KTextField(
                           onChanged: (c) {},
