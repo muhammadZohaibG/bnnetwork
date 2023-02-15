@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text('Simplified the way of connections',
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 20,
+                            fontSize: 18,
                             color: KColors().darkGrey)),
                     const SizedBox(height: 17),
                     Text(

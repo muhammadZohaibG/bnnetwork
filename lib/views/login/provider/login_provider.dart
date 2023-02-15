@@ -5,11 +5,14 @@ import 'package:b_networks/utils/keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 
 import '../../../utils/const.dart';
 
 class LoginProvider extends ChangeNotifier {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String currentMonth = DateFormat('MMMM').format(DateTime.now());
+  String currentYear = DateFormat('y').format(DateTime.now());
   bool isLoading = false;
   updateLoading(bool value) {
     isLoading = value;
@@ -43,10 +46,7 @@ class LoginProvider extends ChangeNotifier {
       log("name==========>>>>>>$name");
       // log("googleAuth.idToken==========>>>>>>${googleAuth.idToken}");
       // log("image==========>>>>>>$imageurl");
-      /*  await storeInSharedPref(Keys.email, email.toString());
-      await storeInSharedPref(Keys.name, name.toString());
-      await storeInSharedPref(Keys.image, imageurl.toString());
-      await storeInSharedPref(Keys.token, googleAuth.idToken.toString());*/
+
       updateLoading(true);
       if (name.isNotEmpty || email.isNotEmpty) {
         log('name and email not empty ');
@@ -64,6 +64,7 @@ class LoginProvider extends ChangeNotifier {
           await storeInSharedPref(Keys.mobile, user['data']['mobile']);
           await storeInSharedPref(
               Keys.companyName, user['data']['company_name']);
+          await storeInSharedPref(Keys.currentMonth, currentMonth);
           updateLoading(false);
           return true;
         } else {
@@ -79,6 +80,7 @@ class LoginProvider extends ChangeNotifier {
     } catch (e) {
       updateLoading(false);
       log(e.toString());
+      showToast('Login Failed!');
       return false;
     }
   }

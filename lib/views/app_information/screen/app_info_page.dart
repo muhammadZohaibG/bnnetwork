@@ -35,7 +35,7 @@ class _AppInfoPageState extends State<AppInfoPage> {
                     'Simplified the way of connections',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 20,
+                      fontSize: 18,
                       color: kColors.darkGrey,
                     ),
                   ),

@@ -17,7 +17,9 @@ import '../../../app components/app_components.dart';
 import '../../../utils/KColors.dart';
 import '../../../app components/KDialogBox.dart';
 import '../../../app components/KTextField.dart';
+import '../../../utils/keys.dart';
 import '../../monthly_bill/screen/monthly_bill_list_screen.dart';
+import '../../settings/view/settings_screen.dart';
 
 class CityDetailsPage extends StatefulWidget {
   String cityName;
@@ -43,6 +45,7 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
   KColors kColors = KColors();
   final formKey = GlobalKey<FormState>();
   HomeProvider? _homeProvider;
+  String? profileImage = '';
 
   @override
   void initState() {
@@ -53,7 +56,10 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
   function() async {
     final cityDetailProvider =
         Provider.of<CityDetailProvider>(context, listen: false);
+
     _homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    profileImage = await getValueInSharedPref(Keys.image);
+    setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await cityDetailProvider.getAllConnectionsOfLocation(
           locationId: widget.locationId);
@@ -70,7 +76,20 @@ class _CityDetailsPageState extends State<CityDetailsPage> {
         builder: (context, cityDetailProvider, child) => Column(children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
-            child: CityDetailsTopBar(cityName: widget.cityName),
+            child: CityDetailsTopBar(
+              cityName: widget.cityName,
+              profileImage: profileImage,
+              onTap: () {
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SettingsScreen()))
+                    .then((value) async {
+                  profileImage = await getValueInSharedPref(Keys.image);
+                  setState(() {});
+                });
+              },
+            ),
           ),
           Expanded(
             child: SingleChildScrollView(

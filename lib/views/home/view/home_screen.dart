@@ -21,8 +21,11 @@ import 'package:shimmer/shimmer.dart';
 import '../../../app components/app_components.dart';
 import '../../../utils/KColors.dart';
 import '../../../app components/kCityLongCard.dart';
+import '../../../utils/const.dart';
+import '../../../utils/keys.dart';
 import '../../city_details/screen/city_details_screen.dart';
 import '../../expense/view/expenses_screen.dart';
+import '../../settings/view/settings_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,6 +43,8 @@ class _HomePageState extends State<HomePage> {
   var bill = Bills();
 
   String? newCity;
+  String? profileImage = '';
+  String? companyName = '';
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -50,7 +55,14 @@ class _HomePageState extends State<HomePage> {
 
   function() async {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-
+    profileImage = await getValueInSharedPref(Keys.image);
+    String? cName = await getValueInSharedPref(Keys.companyName);
+    if (cName == '' || cName == null) {
+      companyName = 'B Networks';
+    } else {
+      companyName = cName;
+    }
+    setState(() {});
     await Future.delayed(const Duration(seconds: 2));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await homeProvider.getLocations();
@@ -63,7 +75,14 @@ class _HomePageState extends State<HomePage> {
 
   getOverallStats() async {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-
+    profileImage = await getValueInSharedPref(Keys.image);
+    String? cName = await getValueInSharedPref(Keys.companyName);
+    if (cName == '' || cName == null) {
+      companyName = 'B Networks';
+    } else {
+      companyName = cName;
+    }
+    setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
       await homeProvider.calculateExpenses();
@@ -71,6 +90,7 @@ class _HomePageState extends State<HomePage> {
       await homeProvider.calculateTotalEarnings();
       await homeProvider.getConnectionsStats();
       homeProvider.getLocations();
+      homeProvider.addCurrentMonthBills();
     });
   }
 
@@ -81,9 +101,19 @@ class _HomePageState extends State<HomePage> {
         body: Consumer<HomeProvider>(builder: (context, homeProvider, child) {
           return Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: HomePageTopBar(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: HomePageTopBar(
+                  profileImage: profileImage!,
+                  companyName: companyName,
+                  onTap: () {
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsScreen()))
+                        .then((value) => getOverallStats());
+                  },
+                ),
               ),
               Expanded(
                   child: SingleChildScrollView(

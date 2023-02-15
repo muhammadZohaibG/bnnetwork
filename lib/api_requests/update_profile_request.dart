@@ -17,14 +17,26 @@ Future<dynamic> updateProfileRequest(
     String? token = await getValueInSharedPref(Keys.token);
     var headers = {'Authorization': 'Bearer $token'};
     var request = http.MultipartRequest('POST', Uri.parse(updateProfileUrl));
-    request.fields.addAll({
-      'name': fullName,
-      'company_name': companyName,
-      'mobile': phoneNumber,
-      'address': address
-    });
-    request.files
-        .add(await http.MultipartFile.fromPath('profile_picture', image));
+
+    if (image == '') {
+      request.fields.addAll({
+        'name': fullName,
+        'company_name': companyName,
+        'mobile': phoneNumber,
+        'address': address,
+        'profile_picture': ''
+      });
+    } else {
+      request.fields.addAll({
+        'name': fullName,
+        'company_name': companyName,
+        'mobile': phoneNumber,
+        'address': address,
+        'profile_picture': ''
+      });
+      request.files
+          .add(await http.MultipartFile.fromPath('profile_picture', image));
+    }
 
     request.headers.addAll(headers);
 

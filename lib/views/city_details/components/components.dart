@@ -64,7 +64,7 @@ class CityDetailsScreenComponents {
                   cityDetailProvider.updateSelectedUserIndexToEdit(i);
                   editOnTap!();
                 },
-                id: connectionsList[i].id,
+                id: i + 1, //connectionsList[i].id,
                 mainTitle: connectionsList[i].fullName!,
                 description:
                     '${connectionsList[i].homeAddress!}, ${connectionsList[i].streetAddress}',

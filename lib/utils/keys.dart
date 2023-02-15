@@ -6,5 +6,6 @@ class Keys {
   static String companyName = 'compnay-name';
   static String mobile = 'mobile';
   static String address = 'address';
+  static String currentMonth = 'current-month';
   static String isSync = 'is-sync';
 }

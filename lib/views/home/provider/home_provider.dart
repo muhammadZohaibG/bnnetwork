@@ -101,6 +101,21 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+  Future addCurrentMonthBills() async {
+    try {
+      String? spMonth = await getValueInSharedPref(Keys.currentMonth);
+      log('current month in sp $spMonth');
+      log('actual current month $currentMonth');
+      if (spMonth != null || spMonth! == currentMonth) {
+        log('dont add');
+      } else {
+        log('month not matched, add bills');
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future getConnectionsStats() async {
     try {
       int? totalActive = await connectionsDb.countActiveConnections();

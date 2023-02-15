@@ -10,7 +10,12 @@ import '../utils/KColors.dart';
 class KLogo extends StatefulWidget {
   double logoRadius;
   double logoFontSize;
-  KLogo({super.key, required this.logoFontSize, required this.logoRadius});
+  bool? isSplash;
+  KLogo(
+      {super.key,
+      required this.logoFontSize,
+      required this.logoRadius,
+      this.isSplash = true});
 
   @override
   State<KLogo> createState() => _KLogoState();
@@ -24,7 +29,7 @@ class _KLogoState extends State<KLogo> {
       onTap: () async {
         String? token = await getValueInSharedPref(Keys.token);
         log('token $token');
-        if (token == null || token == '') {
+        if (token == null || token == '' || widget.isSplash!) {
         } else {
           log(token);
           if (!mounted) return;
