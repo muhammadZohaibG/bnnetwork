@@ -13,15 +13,15 @@ String locationConnectionsWithPaymentModelToJson(
     json.encode(data.toJson());
 
 class LocationConnectionsWithPaymentModel {
-  LocationConnectionsWithPaymentModel({
-    required this.id,
-    required this.fullName,
-    required this.locationId,
-    required this.homeAddress,
-    required this.streetAddress,
-    required this.mobile,
-    required this.paymentStatus,
-  });
+  LocationConnectionsWithPaymentModel(
+      {required this.id,
+      required this.fullName,
+      required this.locationId,
+      required this.homeAddress,
+      required this.streetAddress,
+      required this.mobile,
+      required this.paymentStatus,
+      required this.updatedAt});
 
   int? id;
   String? fullName;
@@ -30,18 +30,19 @@ class LocationConnectionsWithPaymentModel {
   String? streetAddress;
   String? mobile;
   String? paymentStatus;
+  DateTime? updatedAt;
 
   factory LocationConnectionsWithPaymentModel.fromJson(
           Map<String, dynamic> json) =>
       LocationConnectionsWithPaymentModel(
-        id: json["id"],
-        fullName: json["full_name"],
-        locationId: json["location_id"],
-        homeAddress: json["home_address"],
-        streetAddress: json["street_address"],
-        mobile: json["mobile"],
-        paymentStatus: json["payment_status"],
-      );
+          id: json["id"],
+          fullName: json["full_name"],
+          locationId: json["location_id"],
+          homeAddress: json["home_address"],
+          streetAddress: json["street_address"],
+          mobile: json["mobile"],
+          paymentStatus: json["payment_status"],
+          updatedAt: DateTime.parse(json["updated_at"]));
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -51,5 +52,6 @@ class LocationConnectionsWithPaymentModel {
         "street_address": streetAddress,
         "mobile": mobile,
         "payment_status": paymentStatus,
+        "updated_at": updatedAt!.toIso8601String(),
       };
 }

@@ -40,6 +40,7 @@ class Bills {
     if (table.isEmpty) {
       log('Bill Not Found');
     }
+    log(table.toString());
     return table;
   }
 

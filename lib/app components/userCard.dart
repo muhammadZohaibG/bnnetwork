@@ -1,5 +1,6 @@
 import 'package:b_networks/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../utils/KColors.dart';
 
@@ -11,6 +12,7 @@ class UserCard extends StatelessWidget {
   String mainTitle;
   String description;
   String billStatus;
+  DateTime paidDate;
   UserCard(
       {super.key,
       this.onPress,
@@ -19,7 +21,8 @@ class UserCard extends StatelessWidget {
       required this.mainTitle,
       required this.description,
       required this.billStatus,
-      this.descriptionImgPath});
+      this.descriptionImgPath,
+      required this.paidDate});
 
   @override
   Widget build(BuildContext context) {
@@ -48,39 +51,52 @@ class UserCard extends StatelessWidget {
                         fontSize: 14,
                         color: kColors.statsUnderText,
                         fontWeight: FontWeight.w500))),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                    decoration: BoxDecoration(
-                      color:
-                          billStatus == paid ? kColors.accept : kColors.decline,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    height: 22,
-                    width: 65,
-                    child: Center(
-                        child: Text(billStatus,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: kColors.buttonTextWhite,
-                                fontWeight: FontWeight.w600)))),
-                const SizedBox(width: 10),
-                InkWell(
-                  onTap: () => editOntap!(),
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: primaryColor)),
-                    child: Image.asset(
-                      'assets/icons/pen.png',
-                      height: 20,
-                      width: 20,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
+                if (billStatus == paid)
+                  Text(DateFormat("d/MM/yyyy hh:mm a").format(paidDate),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: kColors.accept,
+                          fontWeight: FontWeight.w600)),
+                if (billStatus == paid) const SizedBox(height: 10),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                          color: billStatus == paid
+                              ? kColors.accept
+                              : kColors.decline,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        height: 22,
+                        width: 65,
+                        child: Center(
+                            child: Text(billStatus,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: kColors.buttonTextWhite,
+                                    fontWeight: FontWeight.w600)))),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () => editOntap!(),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: primaryColor)),
+                        child: Image.asset(
+                          'assets/icons/pen.png',
+                          height: 20,
+                          width: 20,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
           )

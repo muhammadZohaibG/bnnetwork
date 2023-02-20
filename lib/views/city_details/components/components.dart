@@ -71,7 +71,8 @@ class CityDetailsScreenComponents {
                 billStatus: connectionsList[i].paymentStatus == null ||
                         connectionsList[i].paymentStatus == pending
                     ? pending
-                    : paid),
+                    : paid,
+                paidDate: connectionsList[i].updatedAt!),
           );
         },
       ),

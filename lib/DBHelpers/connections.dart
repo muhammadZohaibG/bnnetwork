@@ -46,7 +46,8 @@ class Connections {
     */
     //By Left Join
     var testTable = await dbClient!.rawQuery(
-        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS, c.$STREETADDRESS, c.$MOBILE, b.${Bills.STATUS} as payment_status
+        '''Select  c.$ID, c.$LOCATIONID, c.$FULLNAME, c.$HOMEMADDRESS, c.$STREETADDRESS, c.$MOBILE, 
+        b.${Bills.STATUS} as payment_status, b.${Bills.UPDATEDAT} as updated_at
         from $TABLE c LEFT OUTER JOIN ${Bills.TABLE} b on b.${Bills.CONNECTIONID} == c.$ID 
         and b.${Bills.LOCATIONID} = c.$LOCATIONID and b.${Bills.MONTH} = "$month" and b.${Bills.YEAR} = "$year"
         where c.$ISACTIVE = 1 and c.$LOCATIONID = $locationId 

@@ -95,6 +95,7 @@ class CityDetailProvider extends ChangeNotifier {
   }
 
   addInConnectionsList(LocationConnectionsWithPaymentModel newC) {
+    log('updated date is ${newC.updatedAt}');
     connectionsList.add(newC);
     notifyListeners();
   }

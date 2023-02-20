@@ -95,7 +95,9 @@ class MonthlyBillProvider extends ChangeNotifier {
         availableBill.amount = int.parse(amountController.value.text.trim());
         availableBill.status = paid;
         availableBill.isSynchronized = 0;
-        log(availableBill.id.toString());
+        availableBill.updatedAt =
+            DateTime.parse(DateFormat(dateFormat).format(DateTime.now()));
+        log(availableBill.updatedAt.toString());
         int? id = await billsDb.update(availableBill);
         if (id == 0) {
           showToast('Failed to Update!');
