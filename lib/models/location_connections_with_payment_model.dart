@@ -30,19 +30,22 @@ class LocationConnectionsWithPaymentModel {
   String? streetAddress;
   String? mobile;
   String? paymentStatus;
-  DateTime? updatedAt;
+  DateTime updatedAt;
 
   factory LocationConnectionsWithPaymentModel.fromJson(
           Map<String, dynamic> json) =>
       LocationConnectionsWithPaymentModel(
-          id: json["id"],
-          fullName: json["full_name"],
-          locationId: json["location_id"],
-          homeAddress: json["home_address"],
-          streetAddress: json["street_address"],
-          mobile: json["mobile"],
-          paymentStatus: json["payment_status"],
-          updatedAt: DateTime.parse(json["updated_at"]));
+        id: json["id"],
+        fullName: json["full_name"],
+        locationId: json["location_id"],
+        homeAddress: json["home_address"],
+        streetAddress: json["street_address"],
+        mobile: json["mobile"],
+        paymentStatus: json["payment_status"].toString(),
+        updatedAt: json["updated_at"] != null
+            ? DateTime.parse(json["updated_at"])
+            : DateTime.now(),
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -52,6 +55,6 @@ class LocationConnectionsWithPaymentModel {
         "street_address": streetAddress,
         "mobile": mobile,
         "payment_status": paymentStatus,
-        "updated_at": updatedAt!.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
       };
 }

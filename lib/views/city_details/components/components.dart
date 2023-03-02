@@ -68,11 +68,11 @@ class CityDetailsScreenComponents {
                 mainTitle: connectionsList[i].fullName!,
                 description:
                     '${connectionsList[i].homeAddress!}, ${connectionsList[i].streetAddress}',
-                billStatus: connectionsList[i].paymentStatus == null ||
+                billStatus: connectionsList[i].paymentStatus == "null" ||
                         connectionsList[i].paymentStatus == pending
                     ? pending
                     : paid,
-                paidDate: connectionsList[i].updatedAt!),
+                paidDate: connectionsList[i].updatedAt),
           );
         },
       ),

@@ -27,6 +27,7 @@ class Connections {
       {required int? locationId,
       required String? month,
       required String? year}) async {
+    log(month!);
     var dbClient = await DBHelper().db;
     // var tempTable = await dbClient!.rawQuery(''' Select  ''');
 
