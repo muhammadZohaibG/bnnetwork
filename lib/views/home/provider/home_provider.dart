@@ -138,6 +138,9 @@ class HomeProvider extends ChangeNotifier {
 
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
+          log("=================================Start");
+          log(maps[i].toString());
+          log("=================================End");
           log(maps[i]['active_connections'].toString());
           addLocationInList(
               LocationWithActiveConnectionsModel.fromJson(maps[i]));

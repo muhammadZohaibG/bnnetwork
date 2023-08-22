@@ -5,12 +5,13 @@ import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
 import 'package:b_networks/DBHelpers/locations.dart';
-import 'package:b_networks/api_requests/update_profile_request.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/expense_model.dart';
 import 'package:b_networks/models/location_model.dart';
 import 'package:b_networks/utils/KColors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,6 +43,8 @@ class SettingsProvider extends ChangeNotifier {
   TextEditingController companyController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  final firestore = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   File? imageFile;
   XFile? pickedFile;
@@ -105,27 +108,32 @@ class SettingsProvider extends ChangeNotifier {
   Future<bool>? updateProfile() async {
     try {
       updateLoading(true);
-      Map<String, dynamic>? userDetails = await updateProfileRequest(
-          phoneNumber: phoneNumberController.value.text,
-          fullName: fullNameController.value.text,
-          companyName: companyController.value.text,
-          address: addressController.value.text,
-          image: imageFile != null ? imageFile!.path : '');
+       await firestore.collection("users").doc(currentUser!.uid).update({
+         'mobile': phoneNumberController.value.text,
+         'name': fullNameController.value.text,
+         'company_name': companyController.value.text,
+         'address': addressController.value.text,
+         'profile_picture': imageFile != null ? imageFile!.path : ''
+       });
+      // Map<String, dynamic>? userDetails = await updateProfileRequest(
+      //     phoneNumber: phoneNumberController.value.text,
+      //     fullName: fullNameController.value.text,
+      //     companyName: companyController.value.text,
+      //     address: addressController.value.text,
+      //     image: imageFile != null ? imageFile!.path : '');
       log(userDetails.toString());
-      if (userDetails != null) {
-        await storeInSharedPref(Keys.name, userDetails['data']['name']);
-        await storeInSharedPref(
-            Keys.image, userDetails['data']['profile_picture']);
-        await storeInSharedPref(
-            Keys.companyName, userDetails['data']['company_name']);
-        await storeInSharedPref(Keys.address, userDetails['data']['address']);
-        await storeInSharedPref(Keys.mobile, userDetails['data']['mobile']);
-        showToast('Profile Updated!', backgroundColor: primaryColor);
-        updateLoading(false);
-        clearImage();
-        return true;
-      }
+      await storeInSharedPref(Keys.name, fullNameController.value.text,);
+      await storeInSharedPref(
+          Keys.image, imageFile!.path);
+      await storeInSharedPref(
+          Keys.companyName,companyController.value.text);
+      await storeInSharedPref(Keys.address,  addressController.value.text,);
+      await storeInSharedPref(Keys.mobile, phoneNumberController.value.text,);
+      showToast('Profile Updated!', backgroundColor: primaryColor);
+      updateLoading(false);
       clearImage();
+      return true;
+          clearImage();
       updateLoading(false);
       return false;
     } catch (e) {

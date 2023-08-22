@@ -18,7 +18,6 @@ import '../../../utils/KColors.dart';
 import '../../../app components/KDialogBox.dart';
 import '../../../app components/KTextField.dart';
 import '../../../utils/keys.dart';
-import '../../monthly_bill/screen/monthly_bill_list_screen.dart';
 import '../../settings/view/settings_screen.dart';
 
 class CityDetailsPage extends StatefulWidget {

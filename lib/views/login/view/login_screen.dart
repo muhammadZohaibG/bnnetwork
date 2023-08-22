@@ -1,13 +1,11 @@
 import 'dart:developer';
 
-import 'package:b_networks/app%20components/KMainButton.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/utils/const.dart';
 import 'package:b_networks/views/home/view/home_screen.dart';
 import 'package:b_networks/views/login/components/app_info_topbar.dart';
 import 'package:b_networks/views/login/components/components.dart';
 import 'package:b_networks/views/login/provider/login_provider.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         const HomePage()));
-                                          } else {}
+                                          }
                                         } else {
                                           showToast(noInternetConnection);
                                         }

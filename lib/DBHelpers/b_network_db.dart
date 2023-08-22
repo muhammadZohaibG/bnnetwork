@@ -32,6 +32,7 @@ class DBHelper {
     var db = await openDatabase(path,
         version: _databaseVersion, onCreate: _onCreate // onUpgrade: _onUpgrade
         );
+    log(db.toString());
     return db;
   }
 

@@ -19,6 +19,8 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+
+
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           preferredSize: Size(width(context), 50),
           child: UpdateScreenComponents().topBar()),
       body: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, child) => Column(
+        builder: (context, settingsProvider, child) {
+          return Column(
           children: [
             Expanded(
                 child: Padding(
@@ -152,7 +155,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       }
                     })
           ],
-        ),
+        );
+        },
       ),
     );
   }

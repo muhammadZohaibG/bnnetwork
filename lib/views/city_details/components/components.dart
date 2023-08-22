@@ -1,12 +1,9 @@
-import 'dart:developer';
 
-import 'package:b_networks/models/connection_model.dart';
 import 'package:b_networks/models/location_connections_with_payment_model.dart';
 import 'package:b_networks/views/city_details/provider/city_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../app components/KLongCustomCard.dart';
 import '../../../app components/userCard.dart';
 import '../../../utils/KColors.dart';
 import '../../../utils/const.dart';

@@ -21,10 +21,6 @@ class ExpensesProvider extends ChangeNotifier {
   String currentMonth = DateFormat('MMMM').format(DateTime.now());
   String currentYear = DateFormat('y').format(DateTime.now());
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   updateLoader(bool value) {
     isLoading = value;

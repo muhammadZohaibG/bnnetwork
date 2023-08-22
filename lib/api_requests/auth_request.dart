@@ -25,7 +25,7 @@ Future<dynamic> authLogin({required String email, required String name}) async {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 201) {
-      // print(await response.stream.bytesToString());
+       print(response);
       var finalResponse = await http.Response.fromStream(response);
 
       return jsonDecode(finalResponse.body);

@@ -1,13 +1,9 @@
 import 'package:b_networks/app%20components/KCircle.dart';
-import 'package:b_networks/app%20components/KLogo.dart';
 import 'package:b_networks/app%20components/KTopBar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/KColors.dart';
-import '../../../utils/const.dart';
-import '../../../utils/keys.dart';
-import '../../settings/view/settings_screen.dart';
 
 class CityDetailsTopBar extends StatefulWidget {
   String cityName;

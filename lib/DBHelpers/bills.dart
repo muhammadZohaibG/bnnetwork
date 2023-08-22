@@ -3,10 +3,8 @@
 import 'dart:developer';
 
 import 'package:b_networks/DBHelpers/b_network_db.dart';
-import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/models/bill_model.dart';
 import 'package:b_networks/utils/const.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Bills {

@@ -14,9 +14,9 @@ import 'package:b_networks/app%20components/KStatsCards.dart';
 import 'package:b_networks/app%20components/KTextField.dart';
 import 'package:b_networks/app%20components/KUnderTopBar.dart';
 import 'package:b_networks/views/home/provider/home_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../app components/app_components.dart';
 import '../../../utils/KColors.dart';
@@ -94,8 +94,25 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
+  hello() async {
+    QuerySnapshot querySnapshotFirst = await FirebaseFirestore.instance.collection('users').get();
+     Map<String,dynamic> userData =  querySnapshotFirst.docs.first.data() as Map<String,dynamic>;
+     log("=========>>>>>>Printing User Data");
+     log(userData.toString());
+
+    //Get Data inside Location
+    QuerySnapshot querySnapshotSecond = await FirebaseFirestore.instance.collection('users').doc("oqOemla7YgMJOhc33vczCzsRasy1").collection("location").orderBy("id").get();
+    log("=========>>>>>>Printing Location Data");
+    for (var element in querySnapshotSecond.docs) {
+      Map<String,dynamic> locationMap = element.data() as Map<String,dynamic>;
+      log(locationMap.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    hello();
     return Scaffold(
         backgroundColor: KColors().screenBG,
         body: Consumer<HomeProvider>(builder: (context, homeProvider, child) {
@@ -104,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: HomePageTopBar(
-                  profileImage: profileImage!,
+                  profileImage: profileImage,
                   companyName: companyName,
                   onTap: () {
                     Navigator.push(

@@ -1,11 +1,9 @@
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/KColors.dart';
-import '../../../utils/const.dart';
 
 class SettingsScreenComponents {
   Widget tile(
@@ -135,7 +133,7 @@ class SettingsScreenComponents {
                           color: Colors.white.withOpacity(0.5)))
                 ],
               )),
-          Expanded(
+          const Expanded(
               flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

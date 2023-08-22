@@ -1,5 +1,4 @@
 import 'package:b_networks/app%20components/KCircle.dart';
-import 'package:b_networks/app%20components/KLogo.dart';
 import 'package:b_networks/app%20components/KTopBar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
