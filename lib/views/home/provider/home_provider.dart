@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:b_networks/DBHelpers/b_network_db.dart';
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
@@ -9,7 +10,7 @@ import 'package:b_networks/models/location_with_active_connections_model.dart';
 import 'package:b_networks/utils/KColors.dart';
 import 'package:b_networks/utils/const.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:sqflite/sqflite.dart';
 import '../../../DBHelpers/locations.dart';
 
 import 'package:intl/intl.dart';
@@ -196,6 +197,7 @@ class HomeProvider extends ChangeNotifier {
           ..updatedAt =
               DateTime.parse(DateFormat(dateFormat).format(DateTime.now()));
         int? id = await locationDb.addLocation(newLocation);
+
         if (id == 0) {
           showToast('Failed!');
           return false;

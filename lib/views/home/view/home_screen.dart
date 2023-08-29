@@ -62,6 +62,11 @@ class _HomePageState extends State<HomePage> {
     } else {
       companyName = cName;
     }
+    if (profileImage == '' || profileImage == null) {
+      profileImage = 'assets/images/login_image.png';
+    } else {
+      profileImage = profileImage;
+    }
     setState(() {});
     await Future.delayed(const Duration(seconds: 2));
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -82,6 +87,11 @@ class _HomePageState extends State<HomePage> {
     } else {
       companyName = cName;
     }
+    if (profileImage == 'image' || profileImage == null) {
+      profileImage = 'assets/images/login_image.png';
+    } else {
+      profileImage = profileImage;
+    }
     setState(() {});
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // homeProvider.totalExpenseStream = homeProvider.calculateExpenses();
@@ -94,18 +104,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   hello() async {
-    QuerySnapshot querySnapshotFirst = await FirebaseFirestore.instance.collection('users').get();
-     Map<String,dynamic> userData =  querySnapshotFirst.docs.first.data() as Map<String,dynamic>;
-     log("=========>>>>>>Printing User Data");
-     log(userData.toString());
+    QuerySnapshot querySnapshotFirst =
+        await FirebaseFirestore.instance.collection('users').get();
+    Map<String, dynamic> userData =
+        querySnapshotFirst.docs.first.data() as Map<String, dynamic>;
+    log("=========>>>>>>Printing User Data");
+    log(userData.toString());
 
     //Get Data inside Location
-    QuerySnapshot querySnapshotSecond = await FirebaseFirestore.instance.collection('users').doc("oqOemla7YgMJOhc33vczCzsRasy1").collection("location").orderBy("id").get();
+    QuerySnapshot querySnapshotSecond = await FirebaseFirestore.instance
+        .collection('users')
+        .doc("oqOemla7YgMJOhc33vczCzsRasy1")
+        .collection("location")
+        .orderBy("id")
+        .get();
     log("=========>>>>>>Printing Location Data");
     for (var element in querySnapshotSecond.docs) {
-      Map<String,dynamic> locationMap = element.data() as Map<String,dynamic>;
+      Map<String, dynamic> locationMap = element.data() as Map<String, dynamic>;
       log(locationMap.toString());
     }
   }
@@ -120,9 +136,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: HomePageTopBar(
-                  profileImage: profileImage,
-                  companyName: companyName,
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                             context,
@@ -130,6 +144,17 @@ class _HomePageState extends State<HomePage> {
                                 builder: (context) => const SettingsScreen()))
                         .then((value) => getOverallStats());
                   },
+                  child: HomePageTopBar(
+                    profileImage: profileImage,
+                    companyName: companyName,
+                    onTap: () {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SettingsScreen()))
+                          .then((value) => getOverallStats());
+                    },
+                  ),
                 ),
               ),
               Expanded(

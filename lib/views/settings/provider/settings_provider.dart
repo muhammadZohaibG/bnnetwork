@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:b_networks/DBHelpers/bills.dart';
 import 'package:b_networks/DBHelpers/connections.dart';
 import 'package:b_networks/DBHelpers/expenses.dart';
@@ -26,7 +25,7 @@ class SettingsProvider extends ChangeNotifier {
   var expensesDb = Expenses();
   bool isLoading = false;
   String? email = '';
-  String? profileImage = '';
+  String? profileImage = 'assets/images/login_image.png';
   String? fullName = '';
   String? company = '';
   String? phoneNumber = '';
@@ -108,13 +107,13 @@ class SettingsProvider extends ChangeNotifier {
   Future<bool>? updateProfile() async {
     try {
       updateLoading(true);
-       await firestore.collection("users").doc(currentUser!.uid).update({
-         'mobile': phoneNumberController.value.text,
-         'name': fullNameController.value.text,
-         'company_name': companyController.value.text,
-         'address': addressController.value.text,
-         'profile_picture': imageFile != null ? imageFile!.path : ''
-       });
+      await firestore.collection("users").doc(currentUser!.uid).update({
+        'mobile': phoneNumberController.value.text,
+        'name': fullNameController.value.text,
+        'company_name': companyController.value.text,
+        'address': addressController.value.text,
+        'profile_picture': imageFile != null ? imageFile!.path : ''
+      });
       // Map<String, dynamic>? userDetails = await updateProfileRequest(
       //     phoneNumber: phoneNumberController.value.text,
       //     fullName: fullNameController.value.text,
@@ -122,18 +121,25 @@ class SettingsProvider extends ChangeNotifier {
       //     address: addressController.value.text,
       //     image: imageFile != null ? imageFile!.path : '');
       log(userDetails.toString());
-      await storeInSharedPref(Keys.name, fullNameController.value.text,);
       await storeInSharedPref(
-          Keys.image, imageFile!.path);
+        Keys.name,
+        fullNameController.value.text,
+      );
+      await storeInSharedPref(Keys.image, imageFile!.path);
+      await storeInSharedPref(Keys.companyName, companyController.value.text);
       await storeInSharedPref(
-          Keys.companyName,companyController.value.text);
-      await storeInSharedPref(Keys.address,  addressController.value.text,);
-      await storeInSharedPref(Keys.mobile, phoneNumberController.value.text,);
+        Keys.address,
+        addressController.value.text,
+      );
+      await storeInSharedPref(
+        Keys.mobile,
+        phoneNumberController.value.text,
+      );
       showToast('Profile Updated!', backgroundColor: primaryColor);
       updateLoading(false);
       clearImage();
       return true;
-          clearImage();
+      clearImage();
       updateLoading(false);
       return false;
     } catch (e) {
@@ -145,32 +151,36 @@ class SettingsProvider extends ChangeNotifier {
 
   Future getUnSynchronizedData() async {
     try {
-      List<Map<String, dynamic>> billsTable = await billsDb.getUnSynchronized();
-      //log(billsTable.toList().toString());
-      for (var e in billsTable) {
-        addInList(billsList, BillModel.fromJson(e));
-      }
-      List<Map<String, dynamic>> locationsTable =
-          await locationsDb.getUnSynchronized();
+      //Firebase connected synchronization process
+      addIsSyncInSharedPref(Keys.isSync, true);
+      notifyListeners();
+      // Synchronization process used by previous developer
+      // List<Map<String, dynamic>> billsTable = await billsDb.getUnSynchronized();
+      // //log(billsTable.toList().toString());
+      // for (var e in billsTable) {
+      // addInList(billsList, BillModel.fromJson(e));
+      // }
+      // List<Map<String, dynamic>> locationsTable =
+      //     await locationsDb.getUnSynchronized();
       // log('locations ====================>>>>>>>');
       // log(locationsTable.toList().toString());
 
-      List<Map<String, dynamic>> connectionTable =
-          await connectionsDb.getUnSynchronized();
-      // log('connections ====================>>>>>>>');
-      // log(connectionTable.toList().toString());
+      // List<Map<String, dynamic>> connectionTable =
+      //     await connectionsDb.getUnSynchronized();
+      // // log('connections ====================>>>>>>>');
+      // // log(connectionTable.toList().toString());
 
-      List<Map<String, dynamic>> expensesTable =
-          await expensesDb.getUnSynchronized();
-      // log('expenses ====================>>>>>>>');
-      // log(expensesTable.toList().toString());
-      Map<String, dynamic> data = {
-        "locations_list": locationsTable,
-        "connections_list": connectionTable,
-        "bills_list": billsTable,
-        "expenses_list": expensesTable
-      };
-      log(data.toString());
+      // List<Map<String, dynamic>> expensesTable =
+      //     await expensesDb.getUnSynchronized();
+      // // log('expenses ====================>>>>>>>');
+      // // log(expensesTable.toList().toString());
+      // Map<String, dynamic> data = {
+      //   "locations_list": locationsTable,
+      //   "connections_list": connectionTable,
+      //   "bills_list": billsTable,
+      //   "expenses_list": expensesTable
+      // };
+      // log(data.toString());
     } catch (e) {
       log(e.toString());
     }

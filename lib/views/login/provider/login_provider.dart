@@ -21,9 +21,9 @@ class LoginProvider extends ChangeNotifier {
   }
 
   Future<bool?> loginWithGoogle() async {
-
     try {
-      String email = '', imageurl = '', name = '';String? token = '';
+      String? email = '', imageurl = '', name = '';
+      String? token = '';
       bool status = false;
 
       // Trigger the authentication flow
@@ -44,30 +44,28 @@ class LoginProvider extends ChangeNotifier {
           log("token is : $tok");
           token = tok;
         });
-        final DocumentSnapshot documentSnapshot =  await firestore.collection("users").doc(value.user!.uid).get();
+        final DocumentSnapshot documentSnapshot =
+            await firestore.collection("users").doc(value.user!.uid).get();
         await storeInSharedPref(Keys.email, email.toString());
         await storeInSharedPref(Keys.name, name.toString());
-        await storeInSharedPref(Keys.image, imageurl);
+        await storeInSharedPref(Keys.image, imageurl!);
         await storeInSharedPref(Keys.token, token!);
         log(value.user!.email.toString());
-        if(documentSnapshot.exists)
-          {
-            updateLoading(false);
-            status =  true;
-          }else
-            {
-              await firestore.collection("users").doc(value.user!.uid).set({
-                'mobile': "",
-                'name': googleUser.displayName,
-                'email' : googleUser.email,
-                'company_name': "",
-                'address':"",
-                'profile_picture': googleUser.photoUrl ?? ''
-              });
-              updateLoading(false);
-              status =  true;
-            }
-
+        if (documentSnapshot.exists) {
+          updateLoading(false);
+          status = true;
+        } else {
+          await firestore.collection("users").doc(value.user!.uid).set({
+            'mobile': "",
+            'name': googleUser.displayName,
+            'email': googleUser.email,
+            'company_name': "",
+            'address': "",
+            'profile_picture': googleUser.photoUrl ?? ''
+          });
+          updateLoading(false);
+          status = true;
+        }
       }).onError((error, stackTrace) {
         log(error.toString());
       });

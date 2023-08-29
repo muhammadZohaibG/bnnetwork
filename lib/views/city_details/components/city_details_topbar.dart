@@ -31,18 +31,10 @@ class _CityDetailsTopBarState extends State<CityDetailsTopBar> {
           //   logoRadius: 45,
           //   logoFontSize: 16,
           // ),
-          InkWell(
-            onTap: () => widget.onTap!(),
-            child: CachedNetworkImage(
-                imageUrl: widget.profileImage!,
-                imageBuilder: (context, imageProvider) => CircleAvatar(
-                    radius: 20,
-                    backgroundColor: primaryColor.withOpacity(0.2),
-                    backgroundImage: imageProvider),
-                placeholder: (context, url) =>
-                    CircularProgressIndicator(color: primaryColor),
-                errorWidget: (context, url, error) =>
-                    Icon(Icons.error, color: KColors().darkGrey)),
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: primaryColor.withOpacity(0.2),
+            backgroundImage: NetworkImage(widget.profileImage!),
           ),
           const SizedBox(width: 7),
           Text(
